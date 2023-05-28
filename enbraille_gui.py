@@ -1,7 +1,9 @@
 
+from typing import Optional
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import QWizard, QGridLayout, QLabel, QButtonGroup, QWizardPage, QRadioButton
+from PySide6.QtWidgets import QWizard, QGridLayout, QLabel, QButtonGroup, QWizardPage, QRadioButton, QTextEdit
 from enbraille_data import EnBrailleData, EnBrailleMainFct
+from enbraille_widgets import EnBrailleTableComboBox
 
 class EnBrailleWindow(QWizard):
     def __init__(self, data: EnBrailleData):
@@ -9,6 +11,7 @@ class EnBrailleWindow(QWizard):
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
         self.addPage(EnBrailleWizardPageStart(data))
+        self.addPage(EnBrailleSimpleTextPage(data))
 
 class EnBrailleWizardPageStart(QWizardPage):
     def __init__(self, data: EnBrailleData):
@@ -72,3 +75,26 @@ class EnBrailleWizardPageStart(QWizardPage):
         label = QLabel(description)
         label.setTextFormat(Qt.RichText)
         return (button, label)
+
+class EnBrailleSimpleTextPage(QWizardPage):
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+        self.data = data
+
+        self.setTitle(self.tr('Text to BRF'))
+        self.setSubTitle(self.tr('Please enter the text you want to convert to BRF:'))
+
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
+
+        self.textEdit = QTextEdit()
+        self.layout.addWidget(self.textEdit, 0, 0)
+
+        self.textEdit.textChanged.connect(self.onTextChanged)
+
+        self.tableComboBox = EnBrailleTableComboBox()
+        self.layout.addWidget(self.tableComboBox, 1, 0)
+    
+    @Slot()
+    def onTextChanged(self):
+        self.data.inputText = self.textEdit.toPlainText()

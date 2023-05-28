@@ -33,7 +33,11 @@ class EnBrailleData(QObject):
         mainFunctionStr = self._settings.value('mainFunction', str(EnBrailleMainFct.TEXT), type=str)
         self._mainFunction: EnBrailleMainFct = EnBrailleMainFct.fromStr(mainFunctionStr)
 
+        #signals
         self.mainFunctionChanged = Signal(EnBrailleMainFct)
+
+        #public members
+        self.inputText = ''
     
     @property
     def mainFunction(self) -> EnBrailleMainFct:
