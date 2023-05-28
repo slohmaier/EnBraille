@@ -7,7 +7,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
 
-from enbraille import EnBrailleWindow
+from enbraille_gui import EnBrailleWindow
+from enbraille_data import EnBrailleData
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -16,7 +17,8 @@ if __name__ == "__main__":
     app.setOrganizationDomain("slohmaier.de")
     app.setApplicationVersion("0.1.0")
     
-    enrailleWindow = EnBrailleWindow()
+    embrailledata = EnBrailleData(None)
+    enrailleWindow = EnBrailleWindow(data=embrailledata)
     enrailleWindow.show()
 
     sys.exit(app.exec())

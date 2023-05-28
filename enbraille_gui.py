@@ -1,22 +1,20 @@
-from enum import Enum
-from PySide6.QtCore import Qt
+
+from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWizard, QGridLayout, QLabel, QButtonGroup, QWizardPage, QRadioButton
+from enbraille_data import EnBrailleData, EnBrailleMainFct
 
 class EnBrailleWindow(QWizard):
-    def __init__(self):
+    def __init__(self, data: EnBrailleData):
         super().__init__()
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
-        self.addPage(EnBrailleWizardPageStart())
-
-class EnBrailleMainFct(Enum):
-    TEXT = 1
-    DOCUMENT = 2
-    REFORMAT = 3
+        self.addPage(EnBrailleWizardPageStart(data))
 
 class EnBrailleWizardPageStart(QWizardPage):
-    def __init__(self):
+    def __init__(self, data: EnBrailleData):
         super().__init__()
+
+        self.data = data
         self.setTitle(self.tr('What to EnBraille?'))
         self.setSubTitle(self.tr("Please select the function you want to use:"))
         self.layout = QGridLayout()
@@ -24,7 +22,6 @@ class EnBrailleWizardPageStart(QWizardPage):
 
         self.buttonGroup = QButtonGroup()
         self.buttonGroup.buttonClicked.connect(self.onButtonClicked)
-        self.mainFunction = EnBrailleMainFct.TEXT
 
         row = 0
         for fct in EnBrailleMainFct:
@@ -39,11 +36,18 @@ class EnBrailleWizardPageStart(QWizardPage):
 
             self.buttonGroup.addButton(button)   
 
-            if self.mainFunction == fct:
+            if self.data.mainFunction == fct:
                 button.setChecked(True)
     
     def onButtonClicked(self, button):
-        self.mainFunction = button.function
+        self.data.mainFunction = button.function
+    
+    @Slot(EnBrailleMainFct)
+    def onMainFunctionChanged(self, value: EnBrailleMainFct):
+        for button in self.buttonGroup.buttons():
+            if button.function == value:
+                button.setChecked(True)
+                break
     
     # function that creates a new radio button and a descriptive label for a EnBrailleMainFct
     def createRadioButton(self, function: EnBrailleMainFct):
@@ -68,4 +72,3 @@ class EnBrailleWizardPageStart(QWizardPage):
         label = QLabel(description)
         label.setTextFormat(Qt.RichText)
         return (button, label)
-
