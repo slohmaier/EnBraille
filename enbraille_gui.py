@@ -87,14 +87,20 @@ class EnBrailleSimpleTextPage(QWizardPage):
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
+        self.tableComboBox = EnBrailleTableComboBox()
+        self.layout.addWidget(QLabel(self.tr('Braille table:')), 0, 0)      
+        self.layout.addWidget(self.tableComboBox, 0, 1)
+
         self.textEdit = QTextEdit()
-        self.layout.addWidget(self.textEdit, 0, 0)
+        self.layout.addWidget(QLabel(self.tr('Text:')), 1, 0, 1, 2)
+        self.layout.addWidget(self.textEdit, 2, 0, 1, 2)
 
         self.textEdit.textChanged.connect(self.onTextChanged)
-
-        self.tableComboBox = EnBrailleTableComboBox()
-        self.layout.addWidget(self.tableComboBox, 1, 0)
     
     @Slot()
     def onTextChanged(self):
         self.data.inputText = self.textEdit.toPlainText()
+
+    @Slot()
+    def onmainFunctionChanged(self):
+        self.setVisible(self.data.mainFunction == EnBrailleMainFct.TEXT)

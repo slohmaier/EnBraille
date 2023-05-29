@@ -32,9 +32,11 @@ class EnBrailleData(QObject):
 
         mainFunctionStr = self._settings.value('mainFunction', str(EnBrailleMainFct.TEXT), type=str)
         self._mainFunction: EnBrailleMainFct = EnBrailleMainFct.fromStr(mainFunctionStr)
+        self._textTable: str = self._settings.value('textTable', '', type=str)
 
         #signals
         self.mainFunctionChanged = Signal(EnBrailleMainFct)
+        self.TextTable = Signal(str)
 
         #public members
         self.inputText = ''
@@ -52,3 +54,17 @@ class EnBrailleData(QObject):
             self._settings.sync()
 
             self.mainFunctionChanged.emit(value)
+        
+    @property
+    def textTable(self) -> str:
+        return self._textTable
+    
+    @textTable.setter
+    def textTable(self, value: str) -> None:    
+        if self._textTable != value:
+            self._textTable = value
+
+            self._settings.setValue('textTable', value)
+            self._settings.sync()
+
+            self.TextTable.emit(value)
