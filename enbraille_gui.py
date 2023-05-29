@@ -1,10 +1,10 @@
-
+import logging
 from typing import Optional
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWizard, QGridLayout, QLabel, QButtonGroup, QWizardPage, QRadioButton, QTextEdit
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
-from enbraille_functions.text import EnBrailleSimpleTextPage
+from enbraille_functions.text import EnBrailleSimpleTextPage, EnBrailleSimpleTextWorkPage
 
 class EnBrailleWindow(QWizard):
     def __init__(self, data: EnBrailleData):
@@ -12,7 +12,20 @@ class EnBrailleWindow(QWizard):
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
         self.addPage(EnBrailleWizardPageStart(data))
-        self.addPage(EnBrailleSimpleTextPage(data))
+
+        self.simpleTextPage = EnBrailleSimpleTextPage(data)
+        data.mainFunctionChanged.connect(self.simpleTextPage.onmainFunctionChanged)
+        self.simpleTextPage.completeChanged.connect(self.updateNextButtonState)
+        self.addPage(self.simpleTextPage)
+
+        self.simpleTextWorkPage = EnBrailleSimpleTextWorkPage(data)
+        data.mainFunctionChanged.connect(self.simpleTextWorkPage.onmainFunctionChanged)
+        self.simpleTextWorkPage.completeChanged.connect(self.updateNextButtonState)
+        self.addPage(self.simpleTextWorkPage)
+    
+    def updateNextButtonState(self):
+        page = self.currentPage()
+        self.button(QWizard.NextButton).setEnabled(page.isComplete())
 
 class EnBrailleWizardPageStart(QWizardPage):
     def __init__(self, data: EnBrailleData):
