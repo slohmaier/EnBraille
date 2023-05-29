@@ -7,5 +7,6 @@ class EnBrailleTableComboBox(QComboBox):
         super().__init__(parent)
 
         self._libbrl = libbrlImpl()
-        print(self._libbrl.listTables())
         
+        for table in sorted(self._libbrl.listTables()):
+            self.addItem(table)        

@@ -30,20 +30,25 @@ class libbrlLouis(libbrlInterface):
         louis.liblouis.lou_listTables.restype = ctypes.POINTER(ctypes.c_char_p)
         table_list_ptr = louis.liblouis.lou_listTables()
 
+        result: dict[str, str] = {}
+
         # Convert the C string array to a Python list of strings
         i = 0
         while table_list_ptr[i] is not None:
-            list_path = ctypes.string_at(table_list_ptr[i]).decode("utf-8")
-            table_list_ptr[i].free()
+            table_item_ptr = table_list_ptr[i]
+            list_path = ctypes.string_at(table_item_ptr).decode("utf-8")
             
-            if list_path.find('de') != -1:
-                table_filename = os.path.basename(list_path)    
-                
-                print((table_filename, check_result))
+            table_filename = os.path.basename(list_path)    
+            with open(table_item_ptr, 'r') as f:
+                first_line = f.readline().strip()
+                if first_line.startswith('# liblouis: '):
+                    table_name = first_line.split(':', 1)[1].strip()
+                    result[table_name] = table_filename
+            
             i += 1
 
-        table_list_ptr.free()
-        raise Exception()
+        #TODO: Free?
+        return result
 
     def translate(self, text: str, table: str) -> str:
         pass
