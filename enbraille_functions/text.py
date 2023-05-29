@@ -1,10 +1,22 @@
 import os
 import sys
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import Qt, Slot, QThread, Signal
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication, QGridLayout, QLabel, QTextEdit, QWizardPage
 from enbraille_widgets import EnBrailleTableComboBox
 from enbraille_data import EnBrailleData, EnBrailleMainFct
+from libbrl import libbrlImpl
+
+class EnBrailleSimpleWorker(QThread):
+    finished = Signal(str)
+
+    def __init__(self, data: EnBrailleData):
+        super().__init__()
+        self.data = data
+
+    def run(self):
+        outputText = self.
+        self.finished.emit(outputText)
 
 class EnBrailleSimpleTextPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:

@@ -25,6 +25,9 @@ class EnBrailleMainFct(Enum):
         return None
 
 class EnBrailleData(QObject):
+    mainFunctionChanged = Signal(EnBrailleMainFct)
+    TextTableChanged = Signal(str)
+
     def __init__(self, app: QApplication) -> None:
         super().__init__(None)
 
@@ -33,10 +36,6 @@ class EnBrailleData(QObject):
         mainFunctionStr = self._settings.value('mainFunction', str(EnBrailleMainFct.TEXT), type=str)
         self._mainFunction: EnBrailleMainFct = EnBrailleMainFct.fromStr(mainFunctionStr)
         self._textTable: str = self._settings.value('textTable', '', type=str)
-
-        #signals
-        self.mainFunctionChanged = Signal(EnBrailleMainFct)
-        self.TextTable = Signal(str)
 
         #public members
         self.inputText = ''
@@ -67,4 +66,4 @@ class EnBrailleData(QObject):
             self._settings.setValue('textTable', value)
             self._settings.sync()
 
-            self.TextTable.emit(value)
+            self.TextTableChanged.emit(value)
