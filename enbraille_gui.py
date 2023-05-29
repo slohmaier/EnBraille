@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWizard, QGridLayout, QLabel, QButtonGroup, QWizardPage, QRadioButton, QTextEdit
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
-from enbraille_functions.text import EnBrailleSimpleTextPage, EnBrailleSimpleTextWorkPage
+from enbraille_functions.text import EnBrailleSimpleTextPage, EnBrailleSimpleTextWorkPage, EnBrailleSimpleResultPage
 
 class EnBrailleWindow(QWizard):
     def __init__(self, data: EnBrailleData):
@@ -22,6 +22,9 @@ class EnBrailleWindow(QWizard):
         data.mainFunctionChanged.connect(self.simpleTextWorkPage.onmainFunctionChanged)
         self.simpleTextWorkPage.completeChanged.connect(self.updateNextButtonState)
         self.addPage(self.simpleTextWorkPage)
+
+        self.simpleTextResultPage = EnBrailleSimpleResultPage(data)
+        self.addPage(self.simpleTextResultPage)
     
     def updateNextButtonState(self):
         page = self.currentPage()

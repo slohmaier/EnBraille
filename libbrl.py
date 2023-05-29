@@ -1,4 +1,5 @@
 import ctypes
+import logging
 import os
 from enum import Enum
 
@@ -56,14 +57,14 @@ class libbrlLouis(libbrlInterface):
             self._tables = self.listTables()
 
         table_name = None
-        if not table in self._tables:
-            table_name = table
+        if table in self._tables:
+            table_name = self._tables[table]
         else:
-            for name, filename in self._tables.items():
-                if filename == table:
-                    table_name = name
-                    break
+            if table in self._tables.values():
+                table_name = table
+        
         if table_name is None:
             raise ValueError(f'Unknown table {table}')
         
+        logging.debug('libbrlLouis.translate: %s with table %s', text, table_name)
         return louis.translateString([table_name], text)

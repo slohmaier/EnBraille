@@ -39,6 +39,7 @@ class EnBrailleData(QObject):
 
         #public members
         self.inputText = ''
+        self.outputText = ''
     
     @property
     def mainFunction(self) -> EnBrailleMainFct:

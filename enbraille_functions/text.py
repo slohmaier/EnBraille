@@ -2,24 +2,11 @@ import logging
 import os
 import sys
 from PySide6.QtCore import Qt, Slot, QThread, Signal
-from PySide6.QtGui import QGuiApplication
-from PySide6.QtWidgets import QApplication, QGridLayout, QLabel, QTextEdit, QWizardPage
+from PySide6.QtGui import QGuiApplication, QClipboard
+from PySide6.QtWidgets import QApplication, QGridLayout, QLabel, QTextEdit, QWizardPage, QWizard, QPushButton, QProgressBar
 from enbraille_widgets import EnBrailleTableComboBox
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from libbrl import libbrlImpl
-
-class EnBrailleSimpleWorker(QThread):
-    finished = Signal(str)
-
-    def __init__(self, data: EnBrailleData):
-        super().__init__()
-        self.data = data
-
-    def run(self):
-        brl = libbrlImpl()
-        outputText = brl.translate(self.data.inputText, self.data.textTable)
-        print(outputText)
-        self.finished.emit(outputText)
 
 class EnBrailleSimpleTextPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:
@@ -67,6 +54,19 @@ class EnBrailleSimpleTextPage(QWizardPage):
     def onmainFunctionChanged(self, value: EnBrailleMainFct):
         self.setVisible(value == EnBrailleMainFct.TEXT)
 
+class EnBrailleSimpleWorker(QThread):
+    finished = Signal(str)
+
+    def __init__(self, data: EnBrailleData):
+        super().__init__()
+        self.data = data
+
+    def run(self):
+        brl = libbrlImpl()
+        outputText = brl.translate(self.data.inputText, self.data.textTable)
+        logging.debug('EnBrailleSimpleWorker: finished translation: %s', outputText)
+        self.finished.emit(outputText)
+
 class EnBrailleSimpleTextWorkPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:
         super().__init__()
@@ -88,6 +88,7 @@ class EnBrailleSimpleTextWorkPage(QWizardPage):
     def onTaskFinished(self, outputText: str):
         self.data.outputText = outputText
         self.completeChanged.emit()
+        self.wizard().button(QWizard.NextButton).click()
     
     def initializePage(self):
         self.worker.start()
@@ -98,3 +99,32 @@ class EnBrailleSimpleTextWorkPage(QWizardPage):
     @Slot(EnBrailleMainFct)
     def onmainFunctionChanged(self, value: EnBrailleMainFct):
         self.setVisible(value == EnBrailleMainFct.TEXT_WORK)
+
+class EnBrailleSimpleResultPage(QWizardPage):
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+        self.data = data
+
+        self.setTitle(self.tr('Text to BRF'))
+        self.setSubTitle(self.tr('Here is your text in BRF:'))
+
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
+
+        self.layout.addWidget(QLabel(self.tr('Text:')), 0, 0)   
+
+        self.copyToClipboardButton = QPushButton(self.tr('&Copy to Clipboard'))
+        self.copyToClipboardButton.clicked.connect(self.onCopyToClipboard)
+        self.layout.addWidget(self.copyToClipboardButton, 1, 0)
+
+        self.textEdit = QTextEdit()
+        self.textEdit.setReadOnly(True)
+        self.textEdit.setText(self.data.outputText)
+        self.layout.addWidget(self.textEdit, 2, 0)
+    
+    def initializePage(self):
+        self.textEdit.setText(self.data.outputText)
+    
+    def onCopyToClipboard(self):
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(self.data.outputText)
