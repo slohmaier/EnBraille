@@ -1,15 +1,24 @@
 import logging
 from typing import Optional
+
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import QWizard, QGridLayout, QLabel, QButtonGroup, QWizardPage, QRadioButton, QTextEdit
+import PySide6.QtGui
+from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
+                               QWidget, QWizard, QWizardPage)
+
 from enbraille_data import EnBrailleData, EnBrailleMainFct
-from enbraille_widgets import EnBrailleTableComboBox
-from enbraille_functions.text import EnBrailleSimpleTextPage, EnBrailleSimpleTextWorkPage, EnBrailleSimpleResultPage
 from enbraille_functions.reformat import EnBrailleReformatPage
+from enbraille_functions.text import (EnBrailleSimpleResultPage,
+                                      EnBrailleSimpleTextPage,
+                                      EnBrailleSimpleTextWorkPage)
+from enbraille_widgets import EnBrailleTableComboBox
+
 
 class EnBrailleWindow(QWizard):
     def __init__(self, data: EnBrailleData):
         super().__init__()
+        self.data = data
+
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
         self.startPage = EnBrailleWizardPageStart(data)
@@ -34,7 +43,20 @@ class EnBrailleWindow(QWizard):
 
         # refresh wizard page visibility based on current main function
         data.mainFunctionChanged.connect(self.onMainFunctionChanged)
-        data.mainFunctionChanged.emit(data.mainFunction)
+        self.currentIdChanged.connect(self.onPageChanged)
+        
+    def show(self) -> None:
+        res = super().show()
+        self.data.mainFunctionChanged.emit(self.data.mainFunction)
+        return res
+    
+    @Slot(int)  
+    def onPageChanged(self, newPageId: int):
+        for pageId in self.pageIds():
+            page = self.page(pageId)
+            logging.debug('EnBrailleWindow: setting visibility for widgets in page ' + str(page.__class__) + ' to ' + str(page.isVisible()))
+            for widget in page.findChildren(QWidget):
+                widget.setVisible(pageId == newPageId)
     
     @Slot(EnBrailleMainFct)
     def onMainFunctionChanged(self, mainFunction: EnBrailleMainFct):
@@ -44,15 +66,12 @@ class EnBrailleWindow(QWizard):
 
         logging.debug('EnBrailleWindow: mainFunction changed to ' + str(mainFunction))
         self.startPage.setVisible(True)
-        # show the pages for the current main function
-        if mainFunction == EnBrailleMainFct.TEXT:
-            logging.debug('EnBrailleWindow: showing pages for TEXT')
-            self.simpleTextPage.setVisible(True)
-            self.simpleTextWorkPage.setVisible(True)
-            self.simpleTextResultPage.setVisible(True)
-        elif mainFunction == EnBrailleMainFct.REFORMAT:
-            logging.debug('EnBrailleWindow: showing pages for REFORMAT')    
-            self.reformatPage.setVisible(True)
+
+        self.simpleTextPage.setVisible(mainFunction == EnBrailleMainFct.TEXT)
+        self.simpleTextResultPage.setVisible(mainFunction == EnBrailleMainFct.TEXT) 
+        self.simpleTextWorkPage.setVisible(mainFunction == EnBrailleMainFct.TEXT)
+
+        self.reformatPage.setVisible(mainFunction == EnBrailleMainFct.REFORMAT)
 
     def updateNextButtonState(self):
         page = self.currentPage()

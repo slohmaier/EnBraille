@@ -30,6 +30,9 @@ class EnBrailleSimpleTextPage(QWizardPage):
 
         self.textEdit.textChanged.connect(self.onTextChanged)
     
+    def cleanupPage(self) -> None:
+        pass
+    
     def isComplete(self) -> bool:
         return self.data.inputText != '' and self.tableComboBox.currentText() != ''
     
@@ -90,6 +93,9 @@ class EnBrailleSimpleTextWorkPage(QWizardPage):
         self.completeChanged.emit()
         self.wizard().button(QWizard.NextButton).click()
     
+    def cleanupPage(self) -> None:
+        pass
+    
     def initializePage(self):
         self.worker.start()
 
@@ -117,6 +123,9 @@ class EnBrailleSimpleResultPage(QWizardPage):
         self.textEdit.setReadOnly(True)
         self.textEdit.setText(self.data.outputText)
         self.layout.addWidget(self.textEdit, 2, 0)
+
+    def cleanupPage(self) -> None:
+        pass
     
     def initializePage(self):
         self.textEdit.setText(self.data.outputText)

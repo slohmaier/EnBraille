@@ -40,6 +40,12 @@ class EnBrailleReformatPage(QWizardPage):
         self.line.setFrameShadow(QFrame.Sunken)
         self.layout.addWidget(self.line, 1, 0, 1, 3)
     
+    def cleanupPage(self) -> None:
+        pass
+    
+    def initializePage(self) -> None:
+        logging.debug('child widgets: ' + str(self.layout.count())) 
+    
     def isComplete(self) -> bool:
         return os.path.isfile(self.data.reformatFilename)
     
