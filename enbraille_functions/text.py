@@ -48,11 +48,6 @@ class EnBrailleSimpleTextPage(QWizardPage):
         logging.debug('SimpleTextPage: inputText changed to ' + self.data.inputText)
         self.completeChanged.emit()
 
-    @Slot()
-    def onTaskFinished(self, outputText: str):
-        self.data.outputText = outputText
-        self.completeChanged.emit()
-
 class EnBrailleSimpleWorker(QThread):
     finished = Signal(str)
 
