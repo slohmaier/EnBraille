@@ -33,8 +33,8 @@ class EnBrailleWindow(QWizard):
         self.addPage(self.reformatPage)
 
         # refresh wizard page visibility based on current main function
-        logging.debug('EnBrailleWindow: mainFunction = %s', data.mainFunction)
-        self.onMainFunctionChanged(data.mainFunction)
+        data.mainFunctionChanged.connect(self.onMainFunctionChanged)
+        data.mainFunctionChanged.emit(data.mainFunction)
     
     @Slot(EnBrailleMainFct)
     def onMainFunctionChanged(self, mainFunction: EnBrailleMainFct):
@@ -42,13 +42,16 @@ class EnBrailleWindow(QWizard):
         for pageId in self.pageIds():
             self.page(pageId).setVisible(False)
 
+        logging.debug('EnBrailleWindow: mainFunction changed to ' + str(mainFunction))
         self.startPage.setVisible(True)
         # show the pages for the current main function
         if mainFunction == EnBrailleMainFct.TEXT:
+            logging.debug('EnBrailleWindow: showing pages for TEXT')
             self.simpleTextPage.setVisible(True)
             self.simpleTextWorkPage.setVisible(True)
             self.simpleTextResultPage.setVisible(True)
         elif mainFunction == EnBrailleMainFct.REFORMAT:
+            logging.debug('EnBrailleWindow: showing pages for REFORMAT')    
             self.reformatPage.setVisible(True)
 
     def updateNextButtonState(self):
