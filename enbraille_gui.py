@@ -52,7 +52,7 @@ class EnBrailleWindow(QWizard):
     
     @Slot(int)  
     def onPageChanged(self, newPageId: int):
-        for pageId in self.pageIds():
+        for pageId in []:
             page = self.page(pageId)
             logging.debug('EnBrailleWindow: setting visibility for widgets in page ' + str(page.__class__) + ' to ' + str(page.isVisible()))
             for widget in page.findChildren(QWidget):
@@ -60,18 +60,22 @@ class EnBrailleWindow(QWizard):
     
     @Slot(EnBrailleMainFct)
     def onMainFunctionChanged(self, mainFunction: EnBrailleMainFct):
-        # hide all pages
-        for pageId in self.pageIds():
-            self.page(pageId).setVisible(False)
+        # remove all pages except the first one
+        for pageId in self.pageIds()[1:]:
+            self.removePage(pageId)
+        
+        if mainFunction == EnBrailleMainFct.TEXT:
+            self.addPage(self.simpleTextPage)
+            self.addPage(self.simpleTextWorkPage)
+            self.addPage(self.simpleTextResultPage)
+        elif mainFunction == EnBrailleMainFct.REFORMAT:
+            self.addPage(self.reformatPage)
 
-        logging.debug('EnBrailleWindow: mainFunction changed to ' + str(mainFunction))
-        self.startPage.setVisible(True)
-
-        self.simpleTextPage.setVisible(mainFunction == EnBrailleMainFct.TEXT)
-        self.simpleTextResultPage.setVisible(mainFunction == EnBrailleMainFct.TEXT) 
-        self.simpleTextWorkPage.setVisible(mainFunction == EnBrailleMainFct.TEXT)
-
-        self.reformatPage.setVisible(mainFunction == EnBrailleMainFct.REFORMAT)
+        logging.debug('new main function: ' + str(mainFunction))
+        logging.debug('page ids: ' + str(self.pageIds()))
+        
+        self.startPage.setFinalPage(False)
+        self.updateNextButtonState()
 
     def updateNextButtonState(self):
         page = self.currentPage()
