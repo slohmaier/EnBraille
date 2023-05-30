@@ -50,10 +50,6 @@ class EnBrailleSimpleTextPage(QWizardPage):
         self.data.outputText = outputText
         self.completeChanged.emit()
 
-    @Slot(EnBrailleMainFct)
-    def onmainFunctionChanged(self, value: EnBrailleMainFct):
-        self.setVisible(value == EnBrailleMainFct.TEXT)
-
 class EnBrailleSimpleWorker(QThread):
     finished = Signal(str)
 
@@ -66,6 +62,10 @@ class EnBrailleSimpleWorker(QThread):
         outputText = brl.translate(self.data.inputText, self.data.textTable)
         logging.debug('EnBrailleSimpleWorker: finished translation: %s', outputText)
         self.finished.emit(outputText)
+    
+    @Slot(EnBrailleMainFct)
+    def onmainFunctionChanged(self, value: EnBrailleMainFct):
+        self.setVisible(value == EnBrailleMainFct.TEXT)
 
 class EnBrailleSimpleTextWorkPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:
@@ -95,10 +95,6 @@ class EnBrailleSimpleTextWorkPage(QWizardPage):
 
     def isComplete(self) -> bool:
         return self.worker.isFinished()
-
-    @Slot(EnBrailleMainFct)
-    def onmainFunctionChanged(self, value: EnBrailleMainFct):
-        self.setVisible(value == EnBrailleMainFct.TEXT_WORK)
 
 class EnBrailleSimpleResultPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:

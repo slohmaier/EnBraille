@@ -40,6 +40,7 @@ class EnBrailleData(QObject):
         #public members
         self.inputText = ''
         self.outputText = ''
+        self.reformatFilename = ''
     
     @property
     def mainFunction(self) -> EnBrailleMainFct:
