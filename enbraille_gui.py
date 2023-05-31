@@ -2,7 +2,6 @@ import logging
 from typing import Optional
 
 from PySide6.QtCore import Qt, Slot
-import PySide6.QtGui
 from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
                                QWidget, QWizard, QWizardPage)
 
