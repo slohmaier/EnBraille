@@ -36,6 +36,9 @@ class EnBrailleData(QObject):
         mainFunctionStr = self._settings.value('mainFunction', str(EnBrailleMainFct.TEXT), type=str)
         self._mainFunction: EnBrailleMainFct = EnBrailleMainFct.fromStr(mainFunctionStr)
         self._textTable: str = self._settings.value('textTable', '', type=str)
+        self._reformatLineLength = self._settings.value('reformatLineLength', 40, type=int)
+        self._reformatPageLength = self._settings.value('reformatPageLength', 20, type=int)
+        self._reformatWordSplitter = self._settings.value('reformatWordSplitter', '-', type=str)
 
         #public members
         self.inputText = ''
@@ -69,3 +72,39 @@ class EnBrailleData(QObject):
             self._settings.sync()
 
             self.TextTableChanged.emit(value)
+    
+    @property
+    def reformatLineLength(self) -> int:
+        return self._reformatLineLength
+    
+    @reformatLineLength.setter
+    def reformatLineLength(self, value: int) -> None:
+        if self._reformatLineLength != value:
+            self._reformatLineLength = value
+
+            self._settings.setValue('reformatLineLength', value)
+            self._settings.sync()
+    
+    @property
+    def reformatPageLength(self) -> int:
+        return self._reformatPageLength
+    
+    @reformatPageLength.setter
+    def reformatPageLength(self, value: int) -> None:
+        if self._reformatPageLength != value:
+            self._reformatPageLength = value
+
+            self._settings.setValue('reformatPageLength', value)
+            self._settings.sync()
+    
+    @property
+    def reformatWordSplitter(self) -> str:
+        return self._reformatWordSplitter
+    
+    @reformatWordSplitter.setter
+    def reformatWordSplitter(self, value: str) -> None:
+        if self._reformatWordSplitter != value:
+            self._reformatWordSplitter = value
+
+            self._settings.setValue('reformatWordSplitter', value)
+            self._settings.sync()

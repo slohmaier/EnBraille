@@ -5,7 +5,7 @@ import sys
 
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QObject
 from PySide6.QtGui import QClipboard, QGuiApplication
-from PySide6.QtWidgets import (QApplication, QFileDialog, QFrame, QGridLayout,
+from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout,
                                QLabel, QLineEdit, QMessageBox, QPushButton,
                                QTextEdit, QWizard, QWizardPage, QHBoxLayout,)
 
@@ -82,8 +82,11 @@ class EnBrailleReformatPage(QWizardPage):
 
         self._reformater = None
 
+        row = 0
+
         hbox = QHBoxLayout()
-        self.layout.addLayout(hbox, 0, 0, 1, 5)
+        self.layout.addLayout(hbox, row, 0, 1, 5)
+        row += 1
         hbox.addWidget(QLabel(self.tr('File:')))
         self.filenameLineEdit = QLineEdit()
         self.filenameLineEdit.setReadOnly(True)
@@ -96,16 +99,66 @@ class EnBrailleReformatPage(QWizardPage):
         self.line = QFrame()
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
-        self.layout.addWidget(self.line, 1, 0, 1, 3)
+        self.layout.addWidget(self.line, row, 0, 1, 3)
+        row += 1
 
         # add labels for the read pagelength and the maximum line length
-        self.layout.addWidget(QLabel(self.tr('Read pagelength:')), 2, 0)
-        self.readPageLengthLabel = QLabel()
-        self.layout.addWidget(self.readPageLengthLabel, 2, 1)
-        self.layout.addWidget(QLabel(self.tr('Maximum line length:')), 2, 2)
-        self.maxLineLengthLabel = QLabel()
-        self.layout.addWidget(self.maxLineLengthLabel, 2, 3)
+        self.layout.addWidget(QLabel(self.tr('File characteristics:')), row, 0, 1, 3)
 
+        self.layout.addWidget(QLabel(self.tr('Read pagelength:')), row, 0)
+        self.readPageLengthLabel = QLabel('-')
+        self.layout.addWidget(self.readPageLengthLabel, row, 1)
+        row += 1
+
+        self.layout.addWidget(QLabel(self.tr('Maximum line length:')), row, 0)
+        self.maxLineLengthLabel = QLabel('-')
+        self.layout.addWidget(self.maxLineLengthLabel, row, 1)
+        row += 1
+
+        #add horizontal line
+        self.line2 = QFrame()
+        self.line2.setFrameShape(QFrame.HLine)
+        self.line2.setFrameShadow(QFrame.Sunken)
+        self.layout.addWidget(self.line2, row, 0, 1, 3)
+        row += 1
+
+        # settings for reformatting
+        self.layout.addWidget(QLabel(self.tr('Reformat settings:')), row, 0, 1, 3)
+        row += 1
+
+        # add reformat settings controls
+        self.layout.addWidget(QLabel(self.tr('Line length:')), row, 0)
+        self.lineLengthSpinBox = QSpinBox()
+        self.lineLengthSpinBox.setMinimum(0)
+        self.lineLengthSpinBox.setMaximum(1000)
+        self.layout.addWidget(self.lineLengthSpinBox, row, 1)
+        self.lineLengthSpinBox.valueChanged.connect(self.onLineLengthSpinBoxValueChanged)
+        self.lineLengthWarningLabel = QLabel(self.tr('0 means linues won\'t be split'))
+        self.layout.addWidget(self.lineLengthWarningLabel, row, 2)
+        self.lineLengthWarningLabel.setVisible(self.data.reformatLineLength == 0)
+        row += 1
+
+        self.layout.addWidget(QLabel(self.tr('Page length:')), row, 0)
+        self.pageLengthSpinBox = QSpinBox()
+        self.pageLengthSpinBox.setMinimum(0)
+        self.pageLengthSpinBox.setMaximum(1000)
+        self.layout.addWidget(self.pageLengthSpinBox, row, 1)
+        self.pageLengthSpinBox.valueChanged.connect(self.onPageLengthSpinBoxValueChanged)
+        self.pageLengthWarningLabel = QLabel(self.tr('0 means pages won\'t be split'))
+        self.layout.addWidget(self.pageLengthWarningLabel, row, 2)
+        row += 1
+
+        self.layout.addWidget(QLabel(self.tr('Word Splitter:')), row, 0)
+        self.wordSplitterLineEdit = QLineEdit()
+        self.layout.addWidget(self.wordSplitterLineEdit, row, 1)
+        self.wordSplitterLineEdit.textChanged.connect(self.onWordSplitterLineEditTextChanged)
+        self.wordSplitterWarningLabel = QLabel(self.tr('WordSplitter must be one character!'))
+        self.layout.addWidget(self.wordSplitterWarningLabel, row, 2)
+        row += 1
+
+        self.lineLengthSpinBox.setValue(self.data.reformatLineLength)
+        self.pageLengthSpinBox.setValue(self.data.reformatPageLength)
+        self.wordSplitterLineEdit.setText(self.data.reformatWordSplitter)
     
     def cleanupPage(self) -> None:
         pass
@@ -114,7 +167,7 @@ class EnBrailleReformatPage(QWizardPage):
         logging.debug('child widgets: ' + str(self.layout.count())) 
     
     def isComplete(self) -> bool:
-        return os.path.isfile(self.data.reformatFilename)
+        return os.path.isfile(self.data.reformatFilename) and len(self.data.reformatWordSplitter) == 1
     
     def onChooseButtonClicked(self) -> None:
         filename = QFileDialog.getOpenFileName(self, self.tr('Choose file to convert'), '', self.tr('Braille files (*.brl)'))[0]
@@ -124,8 +177,28 @@ class EnBrailleReformatPage(QWizardPage):
                 self.data.reformatFilename = filename
                 self.filenameLineEdit.setText(filename)
                 self.data.reformatFilename = filename
+                
+                if self._reformater.pageLength > 0:
+                    self.readPageLengthLabel.setText(str(self._reformater.pageLength))  
+                else:
+                    self.readPageLengthLabel.setText('no pages detected')
+
+                self.maxLineLengthLabel.setText(str(self._reformater.maxLineLength))
             except Exception as e:
                 QMessageBox.critical(self, self.tr('Error'), self.tr('Error while loading file: ') + str(e))
             
+        self.completeChanged.emit()
+    
+    def onLineLengthSpinBoxValueChanged(self, value: int) -> None:
+        self.data.reformatLineLength = value
+        self.lineLengthWarningLabel.setVisible(self.data.reformatLineLength == 0)
+    
+    def onPageLengthSpinBoxValueChanged(self, value: int) -> None:
+        self.data.reformatPageLength = value
+        self.pageLengthWarningLabel.setVisible(self.data.reformatPageLength == 0)
+    
+    def onWordSplitterLineEditTextChanged(self, text: str) -> None:
+        self.data.reformatWordSplitter = text
+        self.wordSplitterWarningLabel.setVisible(len(self.data.reformatWordSplitter) != 1)
         self.completeChanged.emit()
         
