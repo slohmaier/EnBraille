@@ -6,12 +6,10 @@ from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
                                QWidget, QWizard, QWizardPage)
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
-from enbraille_functions.reformat import EnBrailleReformatPage
+from enbraille_functions.reformat import EnBrailleReformatPage, EnBrailleReformaterWorkPage, EnBrailleReformaterResultPage
 from enbraille_functions.text import (EnBrailleSimpleResultPage,
                                       EnBrailleSimpleTextPage,
                                       EnBrailleSimpleTextWorkPage)
-from enbraille_widgets import EnBrailleTableComboBox
-
 
 class EnBrailleWindow(QWizard):
     def __init__(self, data: EnBrailleData):
@@ -39,6 +37,14 @@ class EnBrailleWindow(QWizard):
         self.reformatPage = EnBrailleReformatPage(data)
         self.reformatPage.completeChanged.connect(self.updateNextButtonState)
         self.addPage(self.reformatPage)
+
+        self.reformatWorkPage = EnBrailleReformaterWorkPage(data)
+        self.reformatWorkPage.completeChanged.connect(self.updateNextButtonState)
+        self.addPage(self.reformatWorkPage)
+
+        self.reformatResultPage = EnBrailleSimpleResultPage(data)
+        self.reformatResultPage.onCompleteChanged.connect(self.updateNextButtonState)   
+        self.addPage(self.reformatResultPage)
 
         # refresh wizard page visibility based on current main function
         data.mainFunctionChanged.connect(self.onMainFunctionChanged)

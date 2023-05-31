@@ -72,7 +72,7 @@ class EnBrailleReformater(QObject):
             lines = f.readlines()
             lineno = 0
             for line in lines:
-                progress.emit(100 * lineno / len(lines), self.tr('Parsing paragraphs line {0} of {1}').format(lineno, len(lines)
+                progress.emit(100 * lineno / len(lines), self.tr('Parsing paragraphs line {0} of {1}').format(lineno, len(lines)))
 
                 if self._pagenoregex.match(line):
                     pass
@@ -82,7 +82,7 @@ class EnBrailleReformater(QObject):
                     line = line.strip()
                     if not line:
                         paragraphs.append(line)
-                    elif paragraphs[-1].endswith(self.data.reformatWordSplitter):
+                    elif paragraphs[-1].endswith(data.reformatWordSplitter):
                         paragraphs[-1] = paragraphs[-1][:-1] + line
                     else:
                         paragraphs[-1] += line
@@ -98,24 +98,24 @@ class EnBrailleReformater(QObject):
 
                 i = 0
                 while i < len(paragraph):
-                    part = paragraph[i:i + self.data.reformatLineLength]
-                    if i + self.data.reformatLineLength < len(paragraph):
-                        if part[-1] != ' ' and paragraph[i + self.data.reformatLineLength] != ' ':
-                            outputData += part[:-1] + self.data.reformatWordSplitter
+                    part = paragraph[i:i + data.reformatLineLength]
+                    if i + data.reformatLineLength < len(paragraph):
+                        if part[-1] != ' ' and paragraph[i + data.reformatLineLength] != ' ':
+                            outputData += part[:-1] + data.reformatWordSplitter
                             i += self.data.reformatLineLength - 1
                         elif part[0] == ' ':
                             outputData += part[1:]
-                            i += self.data.reformatLineLength - 1
+                            i += data.reformatLineLength - 1
                         else:
                             outputData += part
-                            i += self.data.reformatLineLength
+                            i += data.reformatLineLength
                         lineno += 1
                     
                     lineno += 1
                     if lineno % data.reformatPageLength == 0:
                         pageStr = '#{0}\n'.format(pageno)
                         pageStr = pageStr.translate(str.maketrans(_BREILLENUMS))
-                        outputData += ' '*(data.reformatMaxLineLength - len(pageStr)) + pageStr
+                        outputData += ' '*(data.reformatLineLength - len(pageStr)) + pageStr
                         pageno += 1
                         lineno += 1
             
@@ -281,7 +281,8 @@ class ReformatWorker(QThread):
 
     def run(self) -> None:
         try:
-            pass
+            reformater = EnBrailleReformater(self.data.reformatFilename)
+            self.data.outputData = reformater.reformat(self.progress, self.data)
         except Exception as e:
             logging.debug('Error while reformatting: ' + str(e) + '\n' + traceback.format_exc())
             self.progress.emit(-1, self.tr('Error while reformatting: ') + str(e))
@@ -290,7 +291,7 @@ class ReformatWorker(QThread):
         self.finished.emit()
         
 
-class EnBrailleReformaterWorker(QWizardPage):
+class EnBrailleReformaterWorkPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:
         super().__init__(None)
         self.data = data
@@ -356,7 +357,7 @@ class EnBrailleReformaterWorker(QWizardPage):
             self.progressBar.setValue(progress)
             self.progressLabel.setText(message)
 
-class EnBrailleReformaterResult(QWizardPage):
+class EnBrailleReformaterResultPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:
         super().__init__(None)
         self.data = data
