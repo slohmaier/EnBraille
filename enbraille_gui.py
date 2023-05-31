@@ -43,7 +43,7 @@ class EnBrailleWindow(QWizard):
         self.addPage(self.reformatWorkPage)
 
         self.reformatResultPage = EnBrailleSimpleResultPage(data)
-        self.reformatResultPage.onCompleteChanged.connect(self.updateNextButtonState)   
+        self.reformatResultPage.completeChanged.connect(self.updateNextButtonState)   
         self.addPage(self.reformatResultPage)
 
         # refresh wizard page visibility based on current main function
@@ -75,6 +75,8 @@ class EnBrailleWindow(QWizard):
             self.addPage(self.simpleTextResultPage)
         elif mainFunction == EnBrailleMainFct.REFORMAT:
             self.addPage(self.reformatPage)
+            self.addPage(self.reformatWorkPage)
+            self.addPage(self.reformatResultPage)
 
         logging.debug('new main function: ' + str(mainFunction))
         logging.debug('page ids: ' + str(self.pageIds()))

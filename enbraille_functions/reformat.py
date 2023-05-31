@@ -2,13 +2,14 @@ import logging
 import os
 import re
 import sys
+import traceback
 from typing import Optional
 
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QObject
 from PySide6.QtGui import QClipboard, QGuiApplication
 from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout, QWizard,
                                QLabel, QLineEdit, QMessageBox, QPushButton, QSizePolicy,
-                               QProgressBar, QWizard, QWizardPage, QHBoxLayout,)
+                               QProgressBar, QWizard, QWizardPage, QHBoxLayout, QSpacerItem)
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
@@ -271,7 +272,7 @@ class EnBrailleReformatPage(QWizardPage):
         self.wordSplitterWarningLabel.setVisible(len(self.data.reformatWordSplitter) != 1)
         self.completeChanged.emit()
 
-class ReformatWorker(QThread):
+class EnBrailleReformaterWorker(QThread):
     finished = Signal()
     progress = Signal(int, str)
 
@@ -299,7 +300,7 @@ class EnBrailleReformaterWorkPage(QWizardPage):
         self.setTitle(self.tr('Reformatting'))
         self.setSubTitle(self.tr('Reformatting the file...'))
 
-        self.layout = QGridLayout
+        self.layout = QGridLayout()
         self.setLayout(self.layout)
 
         row = 0
@@ -330,9 +331,6 @@ class EnBrailleReformaterWorkPage(QWizardPage):
         pass
 
     def initializePage(self) -> None:
-        self.worker = ReformatWorker(self.data)
-        self.worker.finished.connect(self.onWorkerFinished)
-        self.worker.progress.connect(self.onWorkerProgress)
         self.worker.start()
 
         #disable back button
@@ -365,7 +363,7 @@ class EnBrailleReformaterResultPage(QWizardPage):
         self.setTitle(self.tr('Reformatting done'))
         self.setSubTitle(self.tr('Reformatting the file is done.'))
 
-        self.layout = QGridLayout
+        self.layout = QGridLayout(self)
         self.setLayout(self.layout)
         row = 0
         
