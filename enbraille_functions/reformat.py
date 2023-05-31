@@ -2,16 +2,30 @@ import logging
 import os
 import re
 import sys
+from typing import Optional
 
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QObject
 from PySide6.QtGui import QClipboard, QGuiApplication
-from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout,
-                               QLabel, QLineEdit, QMessageBox, QPushButton,
-                               QTextEdit, QWizard, QWizardPage, QHBoxLayout,)
+from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout, QWizard,
+                               QLabel, QLineEdit, QMessageBox, QPushButton, QSizePolicy,
+                               QProgressBar, QWizard, QWizardPage, QHBoxLayout,)
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
 from libbrl import libbrlImpl
+
+_BREILLENUMS = {
+    '0': 'j',
+    '1': 'a',
+    '2': 'b',
+    '3': 'c',
+    '4': 'd',
+    '5': 'e',
+    '6': 'f',
+    '7': 'g',
+    '8': 'h',
+    '9': 'i'
+}
 
 class EnBrailleReformater(QObject):
     _pagenoregex = re.compile(r'^\s+\#\w+\s*$')
@@ -34,7 +48,6 @@ class EnBrailleReformater(QObject):
             
                 # count pagelength
                 linecount += 1
-                print('"{}"'.format(line))
                 if self._pagenoregex.match(line):
                     pageLengths.append(linecount)
                     linecount = 0
@@ -51,6 +64,62 @@ class EnBrailleReformater(QObject):
                     if count > maxCount:
                         maxCount = count
                         self._pageLength = pageLength
+    
+    def reformat(self, progress: Signal, data: EnBrailleData) -> str:
+        with open(self._filename, 'r') as f:
+            paragraphs = []
+
+            lines = f.readlines()
+            lineno = 0
+            for line in lines:
+                progress.emit(100 * lineno / len(lines), self.tr('Parsing paragraphs line {0} of {1}').format(lineno, len(lines)
+
+                if self._pagenoregex.match(line):
+                    pass
+                elif line.startwith('  '):
+                    paragraphs.append(line)
+                else:
+                    line = line.strip()
+                    if not line:
+                        paragraphs.append(line)
+                    elif paragraphs[-1].endswith(self.data.reformatWordSplitter):
+                        paragraphs[-1] = paragraphs[-1][:-1] + line
+                    else:
+                        paragraphs[-1] += line
+                lineno += 1
+            
+            outputData = ''
+            paragraphno = 0
+            lineno = 0
+            pageno = 1
+            for paragraph in paragraphs:
+                progress.emit(100 * paragraphno / len(paragraphs), self.tr('Reformatting paragraph {0} of {1}').format(paragraphno, len(paragraphs)))
+                paragraphno += 1
+
+                i = 0
+                while i < len(paragraph):
+                    part = paragraph[i:i + self.data.reformatLineLength]
+                    if i + self.data.reformatLineLength < len(paragraph):
+                        if part[-1] != ' ' and paragraph[i + self.data.reformatLineLength] != ' ':
+                            outputData += part[:-1] + self.data.reformatWordSplitter
+                            i += self.data.reformatLineLength - 1
+                        elif part[0] == ' ':
+                            outputData += part[1:]
+                            i += self.data.reformatLineLength - 1
+                        else:
+                            outputData += part
+                            i += self.data.reformatLineLength
+                        lineno += 1
+                    
+                    lineno += 1
+                    if lineno % data.reformatPageLength == 0:
+                        pageStr = '#{0}\n'.format(pageno)
+                        pageStr = pageStr.translate(str.maketrans(_BREILLENUMS))
+                        outputData += ' '*(data.reformatMaxLineLength - len(pageStr)) + pageStr
+                        pageno += 1
+                        lineno += 1
+            
+            return outputData
 
     @property
     def filename(self) -> str:
@@ -201,4 +270,101 @@ class EnBrailleReformatPage(QWizardPage):
         self.data.reformatWordSplitter = text
         self.wordSplitterWarningLabel.setVisible(len(self.data.reformatWordSplitter) != 1)
         self.completeChanged.emit()
+
+class ReformatWorker(QThread):
+    finished = Signal()
+    progress = Signal(int, str)
+
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+        self.data = data
+
+    def run(self) -> None:
+        try:
+            pass
+        except Exception as e:
+            logging.debug('Error while reformatting: ' + str(e) + '\n' + traceback.format_exc())
+            self.progress.emit(-1, self.tr('Error while reformatting: ') + str(e))
+
+        self.progress.emit(100, self.tr('Done.'))
+        self.finished.emit()
+        
+
+class EnBrailleReformaterWorker(QWizardPage):
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__(None)
+        self.data = data
+
+        self.setTitle(self.tr('Reformatting'))
+        self.setSubTitle(self.tr('Reformatting the file...'))
+
+        self.layout = QGridLayout
+        self.setLayout(self.layout)
+
+        row = 0
+
+        # add vertical spacer
+        self.layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding), row, 0, 1, 3)
+        row += 1
+
+        self.progressBar = QProgressBar()
+        self.progressBar.setRange(0, 100)
+        self.progressBar.setValue(0)
+        self.layout.addWidget(self.progressBar, row, 0, 1, 3)
+        row += 1
+        
+        self.progressLabel = QLabel(self.tr('Starting...'))
+        self.progressLabel.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.progressLabel, row, 0, 1, 3)
+
+        # add vertical spacer
+        self.layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding), row, 0, 1, 3)
+        row += 1
+
+        self.worker = EnBrailleReformaterWorker(self.data)
+        self.worker.finished.connect(self.onWorkerFinished)     
+        self.worker.progress.connect(self.onWorkerProgress)
+    
+    def cleanupPage(self) -> None:
+        pass
+
+    def initializePage(self) -> None:
+        self.worker = ReformatWorker(self.data)
+        self.worker.finished.connect(self.onWorkerFinished)
+        self.worker.progress.connect(self.onWorkerProgress)
+        self.worker.start()
+
+        #disable back button
+        self.wizard().button(QWizard.BackButton).setEnabled(False)
+        self.wizard().button(QWizard.NextButton).setEnabled(False)
+        self.wizard().button(QWizard.FinishButton).setEnabled(False)
+    
+    def isComplete(self) -> bool:
+        return self.worker.isFinished()
+    
+    def onWorkerFinished(self) -> None:
+        self.wizard().button(QWizard.BackButton).setEnabled(True)
+        self.wizard().button(QWizard.NextButton).setEnabled(True)
+        self.wizard().button(QWizard.FinishButton).setEnabled(True)
+        self.completeChanged.emit()
+    
+    def onWorkerProgress(self, progress: int, message: str) -> None:
+        if progress == -1:
+            QMessageBox.critical(self, self.tr('Error'), message)   
+            self.wizard().back()
+        else:
+            self.progressBar.setValue(progress)
+            self.progressLabel.setText(message)
+
+class EnBrailleReformaterResult(QWizardPage):
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__(None)
+        self.data = data
+
+        self.setTitle(self.tr('Reformatting done'))
+        self.setSubTitle(self.tr('Reformatting the file is done.'))
+
+        self.layout = QGridLayout
+        self.setLayout(self.layout)
+        row = 0
         
