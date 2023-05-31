@@ -42,7 +42,7 @@ class EnBrailleWindow(QWizard):
         self.reformatWorkPage.completeChanged.connect(self.updateNextButtonState)
         self.addPage(self.reformatWorkPage)
 
-        self.reformatResultPage = EnBrailleSimpleResultPage(data)
+        self.reformatResultPage = EnBrailleReformaterResultPage(data)
         self.reformatResultPage.completeChanged.connect(self.updateNextButtonState)   
         self.addPage(self.reformatResultPage)
 

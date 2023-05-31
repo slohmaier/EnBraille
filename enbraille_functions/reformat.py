@@ -6,27 +6,17 @@ import traceback
 from typing import Optional
 
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QObject
-from PySide6.QtGui import QClipboard, QGuiApplication
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout, QWizard,
                                QLabel, QLineEdit, QMessageBox, QPushButton, QSizePolicy,
-                               QProgressBar, QWizard, QWizardPage, QHBoxLayout, QSpacerItem)
+                               QProgressBar, QWizard, QWizardPage, QHBoxLayout, QSpacerItem,
+                               QTextEdit, QVBoxLayout,)
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
 from libbrl import libbrlImpl
 
-_BREILLENUMS = {
-    '0': 'j',
-    '1': 'a',
-    '2': 'b',
-    '3': 'c',
-    '4': 'd',
-    '5': 'e',
-    '6': 'f',
-    '7': 'g',
-    '8': 'h',
-    '9': 'i'
-}
+_BREILLENUMS = {'0': 'j', '1': 'a', '2': 'b', '3': 'c', '4': 'd', '5': 'e', '6': 'f', '7': 'g', '8': 'h', '9': 'i'}
 
 class EnBrailleReformater(QObject):
     _pagenoregex = re.compile(r'^\s+\#\w+\s*$')
@@ -77,7 +67,7 @@ class EnBrailleReformater(QObject):
 
                 if self._pagenoregex.match(line):
                     pass
-                elif line.startwith('  '):
+                elif line.startswith('  '):
                     paragraphs.append(line)
                 else:
                     line = line.strip()
@@ -103,7 +93,7 @@ class EnBrailleReformater(QObject):
                     if i + data.reformatLineLength < len(paragraph):
                         if part[-1] != ' ' and paragraph[i + data.reformatLineLength] != ' ':
                             outputData += part[:-1] + data.reformatWordSplitter
-                            i += self.data.reformatLineLength - 1
+                            i += data.reformatLineLength - 1
                         elif part[0] == ' ':
                             outputData += part[1:]
                             i += data.reformatLineLength - 1
@@ -111,6 +101,10 @@ class EnBrailleReformater(QObject):
                             outputData += part
                             i += data.reformatLineLength
                         lineno += 1
+                        outputData += '\n'
+                    else:
+                        outputData += part
+                        i += len(part)
                     
                     lineno += 1
                     if lineno % data.reformatPageLength == 0:
@@ -346,6 +340,7 @@ class EnBrailleReformaterWorkPage(QWizardPage):
         self.wizard().button(QWizard.NextButton).setEnabled(True)
         self.wizard().button(QWizard.FinishButton).setEnabled(True)
         self.completeChanged.emit()
+        self.wizard().next()
     
     def onWorkerProgress(self, progress: int, message: str) -> None:
         if progress == -1:
@@ -366,4 +361,29 @@ class EnBrailleReformaterResultPage(QWizardPage):
         self.layout = QGridLayout(self)
         self.setLayout(self.layout)
         row = 0
+
+        self.layout.addWidget(QLabel(self.tr('Reformatted file:')), row, 0)
+        row += 1
+
+        # add a frame to hold the text edit
+        self.frame = QFrame()
+        self.frame.setFrameStyle(QFrame.StyledPanel | QFrame.Sunken)
+        self.frame.setLineWidth(1)
+        self.frame.setMidLineWidth(0)
+        self.layout.addWidget(self.frame, row, 0, 1, 3)
+
+        self.textEdit = QTextEdit()
+        self.textEdit.setReadOnly(True)
+        self.textEdit.setLineWrapMode(QTextEdit.NoWrap)
+        self.textEdit.setAcceptRichText(False)
+        self.textEdit.setFont(QFont('Courier New', 10))
+        self.frame.setLayout(QVBoxLayout())
+        self.frame.layout().addWidget(self.textEdit)
+        row += 1
+
+    def cleanupPage(self) -> None:
+        pass
+
+    def initializePage(self) -> None:
+        self.textEdit.setText(self.data.outputData)
         
