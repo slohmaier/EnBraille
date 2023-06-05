@@ -61,12 +61,13 @@ class EnBrailleReformater(QObject):
             lines = []
             for paragraph in paragraphs:
                 lines.extend(self._reformatPragraph(paragraph, data))
+            logging.debug('Reformated to {} lines'.format(len(lines)))
             return self._generateOutput(lines, data)
     
     def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
         paragraphs = ['']
         lines = inputFile.readlines()
-        logging.debug('parsing lines: {} to paragrphs'.format(lines))
+        logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
         for line in lines:
             if self._pagenoregex.match(line):
                 pass
@@ -86,6 +87,8 @@ class EnBrailleReformater(QObject):
 
                 if len(line) < self.maxLineLength-2 and not paragraphAdded:
                     paragraphs.append
+        
+        logging.debug('Found {} paragraphs'.format(len(paragraphs)))
         return paragraphs
 
     def _reformatPragraph(self, paragraph: str, data: EnBrailleData) -> list[str]:
@@ -109,6 +112,7 @@ class EnBrailleReformater(QObject):
             # add line to lines
             lines.append(paragraph[start:end])
             i = end+1
+        logging.debug('Reformated paragraph to {} lines'.format(len(lines)))
 
         return lines
 
@@ -116,7 +120,6 @@ class EnBrailleReformater(QObject):
         output = ''
         lineno = 1
         for line in lines:
-            print(line)
             output += line + '\n'
 
             if data.reformatPageLength > 0 and lineno % data.reformatPageLength == 0:
