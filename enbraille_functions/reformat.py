@@ -64,25 +64,29 @@ class EnBrailleReformater(QObject):
             return self._generateOutput(lines, data)
     
     def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
-        paragraph = []
-        line = inputFile.readline()
-        while line:
+        paragraphs = ['']
+        lines = inputFile.readlines()
+        logging.debug('parsing lines: {} to paragrphs'.format(lines))
+        for line in lines:
             if self._pagenoregex.match(line):
-                break
-            if len(paragraph) < 1:
-                paragraph.append(line.strip())
+                pass
             else:
-                # if line starts with a space this is a new paragraph
+                paragraphAdded = False
                 if line.startswith(' '):
-                    paragraph.append('')
-                # strip wordplitters from line endings
-                if len(paragraph[-1]) > 0 and paragraph[-1][-1] == data.reformatWordSplitter:
-                    paragraph[-1] = paragraph[-1][:-1]
-                # add line to paragraph
-                paragraph[-1] += line.strip()   
+                    paragraphs.append('')
+                    paragraphAdded = True
 
-            line = inputFile.readline()
-        return paragraph
+                line = line.strip()
+
+                if line.endswith(data.reformatWordSplitter):
+                    paragraphs[-1] += line[:-1]
+                    continue
+
+                paragraphs[-1] += line
+
+                if len(line) < self.maxLineLength-2 and not paragraphAdded:
+                    paragraphs.append
+        return paragraphs
 
     def _reformatPragraph(self, paragraph: str, data: EnBrailleData) -> list[str]:
         lines = []
@@ -94,13 +98,13 @@ class EnBrailleReformater(QObject):
                 start += 1
             # find end of line
             end = start + data.reformatLineLength - 1
-            if end > len(paragraph):
+            if end >= len(paragraph) - 1:
                 end = len(paragraph)-1
-            else:
-                if paragraph[end] == ' ':
-                    end -= 1
-                elif paragraph[end-1] == ' ':
-                    end -= 2
+
+            if paragraph[end] == ' ':
+                end -= 1
+            elif paragraph[end-1] == ' ':
+                end -= 2
             
             # add line to lines
             lines.append(paragraph[start:end])
