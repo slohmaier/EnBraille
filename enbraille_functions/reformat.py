@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-import sys
 import traceback
 from typing import Optional
 
@@ -58,63 +57,73 @@ class EnBrailleReformater(QObject):
     
     def reformat(self, progress: Signal, data: EnBrailleData) -> str:
         with open(self._filename, 'r') as f:
-            paragraphs = []
-
-            lines = f.readlines()
-            lineno = 0
-            for line in lines:
-                progress.emit(100 * lineno / len(lines), self.tr('Parsing paragraphs line {0} of {1}').format(lineno, len(lines)))
-
-                if self._pagenoregex.match(line):
-                    pass
-                elif line.startswith('  '):
-                    paragraphs.append(line)
-                else:
-                    line = line.strip()
-                    if not line:
-                        paragraphs.append(line)
-                    elif paragraphs[-1].endswith(data.reformatWordSplitter):
-                        paragraphs[-1] = paragraphs[-1][:-1] + line
-                    else:
-                        paragraphs[-1] += line
-                lineno += 1
-            
-            outputData = ''
-            paragraphno = 0
-            lineno = 0
-            pageno = 1
+            paragraphs = self._parseParagraphs(f, data)
+            lines = []
             for paragraph in paragraphs:
-                progress.emit(100 * paragraphno / len(paragraphs), self.tr('Reformatting paragraph {0} of {1}').format(paragraphno, len(paragraphs)))
-                paragraphno += 1
+                lines.extend(self._reformatPragraph(paragraph, data))
+            return self._generateOutput(lines, data)
+    
+    def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
+        paragraph = []
+        line = inputFile.readline()
+        while line:
+            if self._pagenoregex.match(line):
+                break
+            if len(paragraph) < 1:
+                paragraph.append(line.strip())
+            else:
+                # if line starts with a space this is a new paragraph
+                if line.startswith(' '):
+                    paragraph.append('')
+                # strip wordplitters from line endings
+                if len(paragraph[-1]) > 0 and paragraph[-1][-1] == data.reformatWordSplitter:
+                    paragraph[-1] = paragraph[-1][:-1]
+                # add line to paragraph
+                paragraph[-1] += line.strip()   
 
-                i = 0
-                while i < len(paragraph):
-                    part = paragraph[i:i + data.reformatLineLength]
-                    if i + data.reformatLineLength < len(paragraph):
-                        if part[-1] != ' ' and paragraph[i + data.reformatLineLength] != ' ':
-                            outputData += part[:-1] + data.reformatWordSplitter
-                            i += data.reformatLineLength - 1
-                        elif part[0] == ' ':
-                            outputData += part[1:]
-                            i += data.reformatLineLength - 1
-                        else:
-                            outputData += part
-                            i += data.reformatLineLength
-                        lineno += 1
-                        outputData += '\n'
-                    else:
-                        outputData += part
-                        i += len(part)
-                    
-                    lineno += 1
-                    if lineno % data.reformatPageLength == 0:
-                        pageStr = '#{0}\n'.format(pageno)
-                        pageStr = pageStr.translate(str.maketrans(_BREILLENUMS))
-                        outputData += ' '*(data.reformatLineLength - len(pageStr)) + pageStr
-                        pageno += 1
-                        lineno += 1
+            line = inputFile.readline()
+        return paragraph
+
+    def _reformatPragraph(self, paragraph: str, data: EnBrailleData) -> list[str]:
+        lines = []
+        i = 0
+        while i < len(paragraph):
+            start = i
+            # skip leading space
+            if paragraph[start] == ' ':
+                start += 1
+            # find end of line
+            end = start + data.reformatLineLength - 1
+            if end > len(paragraph):
+                end = len(paragraph)-1
+            else:
+                if paragraph[end] == ' ':
+                    end -= 1
+                elif paragraph[end-1] == ' ':
+                    end -= 2
             
-            return outputData
+            # add line to lines
+            lines.append(paragraph[start:end])
+            i = end+1
+
+        return lines
+
+    def _generateOutput(self, lines: list[str], data: EnBrailleData) -> str:
+        output = ''
+        lineno = 1
+        for line in lines:
+            print(line)
+            output += line + '\n'
+
+            if data.reformatPageLength > 0 and lineno % data.reformatPageLength == 0:
+                pageStr = '#{}'.format( (lineno / data.reformatPageLength) + 1 )
+                for s, n in _BREILLENUMS.items():
+                    pageStr = pageStr.replace(s, n)
+                output += ' ' * (data.reformatLineLength - len(pageStr)) + pageStr + '\n'
+                lineno += 1
+
+            lineno += 1
+        return output
 
     @property
     def filename(self) -> str:

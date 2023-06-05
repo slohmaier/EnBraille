@@ -22,7 +22,7 @@ pyinstaller_dmg_options = {
 setup(
     name='EnBraille',
     version='1.0',
-    author='Your Name',
+    author='Stefan Lohmaier',
     description='EnBraille App',
     app=['enbraille_main.py'],
     data_files=[
