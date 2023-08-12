@@ -1,10 +1,29 @@
+import logging
 import sys
+from PySide6.QtCore import QObject
+from PySide6.QtWidgets import QApplication
+from enbraille_data import EnBrailleData
 from enbraille_functions.reformat import EnBrailleReformater
 
+class Dummy(QObject):
+    def progress(self, perc, msg):
+        return
+
 if __name__ == '__main__':
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
     r = EnBrailleReformater(sys.argv[1])
-    print(r.filename)
-    print('maxLength')
-    print(r._maxLineLength)
-    print('pageLengths')
-    print(r.pageLength)
+    sys.stderr.write(r.filename+'\n')
+    sys.stderr.write('maxLength'+'\n')
+    sys.stderr.write(str(r._maxLineLength)+'\n')
+    sys.stderr.write('pageLengths'+'\n')
+    sys.stderr.write(str(r.pageLength)+'\n')
+    
+    app = QApplication([sys.argv[0]])
+    app.setApplicationName("EnBraille")
+    app.setOrganizationName("slohmaier")
+    app.setOrganizationDomain("slohmaier.de")
+    app.setApplicationVersion("0.1.0")
+    
+    embrailledata = EnBrailleData(app)
+    d = Dummy()
+    r.reformat(d.progress, embrailledata)
