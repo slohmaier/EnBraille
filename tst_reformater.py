@@ -24,9 +24,9 @@ if __name__ == '__main__':
     app.setOrganizationDomain("slohmaier.de")
     app.setApplicationVersion("0.1.0")
     
-    embrailledata = EnBrailleData(app)
-    for n in dir(embrailledata):
+    enbrailledata = EnBrailleData(app)
+    for n in dir(enbrailledata):
         if n.startswith('refor'):
-            sys.stderr.write('{}: {}\n'.format(n, getattr(embrailledata, n)))
+            sys.stderr.write('{}: {}\n'.format(n, getattr(enbrailledata, n)))
     d = Dummy()
-    print(r.reformat(d.progress, embrailledata))
+    print(r.reformat(d.progress, enbrailledata))
