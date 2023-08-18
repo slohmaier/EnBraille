@@ -25,5 +25,8 @@ if __name__ == '__main__':
     app.setApplicationVersion("0.1.0")
     
     embrailledata = EnBrailleData(app)
+    for n in dir(embrailledata):
+        if n.startswith('refor'):
+            sys.stderr.write('{}: {}\n'.format(n, getattr(embrailledata, n)))
     d = Dummy()
-    r.reformat(d.progress, embrailledata)
+    print(r.reformat(d.progress, embrailledata))
