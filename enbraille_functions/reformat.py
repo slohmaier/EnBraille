@@ -13,9 +13,8 @@ from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout, QWiza
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
+from enbraille_tools import generateOutput, reformatPragraph
 from libbrl import libbrlImpl
-
-_BREILLENUMS = {'0': 'j', '1': 'a', '2': 'b', '3': 'c', '4': 'd', '5': 'e', '6': 'f', '7': 'g', '8': 'h', '9': 'i'}
 
 class EnBrailleReformater(QObject):
     _pagenoregex = re.compile(r'^\s+\#\w+\s*$')
@@ -60,9 +59,9 @@ class EnBrailleReformater(QObject):
             paragraphs = self._parseParagraphs(f, data)
             lines = []
             for paragraph in paragraphs:
-                lines.extend(self._reformatPragraph(paragraph, data))
+                lines.extend(reformatPragraph(paragraph, data.reformatLineLength, data.reformatWordSplitter))
             logging.debug('Reformated to {} lines'.format(len(lines)))
-            return self._generateOutput(lines, data)
+            return generateOutput(lines, data.reformatPageLength, data.reformatLineLength)
     
     def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
         paragraphs = ['']
@@ -90,56 +89,6 @@ class EnBrailleReformater(QObject):
         
         logging.debug('Found {} paragraphs'.format(len(paragraphs)))
         return paragraphs
-
-    def _reformatPragraph(self, paragraph: str, data: EnBrailleData) -> list[str]:
-        lines = []
-        paraLen = len(paragraph)
-        i = 0
-        while i < paraLen:
-            addSeperator = False
-
-            #move start of new line to none whitespace
-            while paragraph[i].isspace() and i < paraLen:
-                i += 1
-            
-            #move back of new line until non whitespace
-            endi = i + data.reformatLineLength - 1
-            if endi >= paraLen:
-                endi = paraLen -1
-            while paragraph[endi].isspace() and endi > i:
-                endi -= 1
-            
-            #seperate non-whitesapce word
-            if endi == i and endi + 1 < paraLen and not paragraph[endi].isspace():
-                endi -= 1
-                addSeperator = True
-            
-
-            line = paragraph[i:endi]
-
-            if addSeperator:
-                line += data.reformatWordSplitter
-            
-            lines.append(line)
-            i = endi + 1
-
-        return lines
-
-    def _generateOutput(self, lines: list[str], data: EnBrailleData) -> str:
-        output = ''
-        lineno = 1
-        for line in lines:
-            output += line + '\n'
-
-            if data.reformatPageLength > 0 and lineno % data.reformatPageLength == 0:
-                pageStr = '#{}'.format( int(lineno / data.reformatPageLength) + 1 )
-                for s, n in _BREILLENUMS.items():
-                    pageStr = pageStr.replace(s, n)
-                output += ' ' * (data.reformatLineLength - len(pageStr) - 1) + pageStr + '\n'
-                lineno += 1
-
-            lineno += 1
-        return output
 
     @property
     def filename(self) -> str:
