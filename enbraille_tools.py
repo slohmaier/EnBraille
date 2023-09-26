@@ -19,7 +19,7 @@ def reformatPragraph(paragraph: str, lineLength: int, lineSeperator: str) -> lis
             endi -= 1
         
         #seperate non-whitesapce word
-        if endi == i and endi + 1 < paraLen and not paragraph[endi].isspace():
+        if endi + 1 < paraLen and not paragraph[endi].isspace():
             endi -= 1
             addSeperator = True
         
