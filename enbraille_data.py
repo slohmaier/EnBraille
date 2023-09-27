@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from typing import Optional
 from PySide6.QtCore import QObject, Signal, Slot, Qt, QSettings
@@ -39,7 +40,7 @@ class EnBrailleData(QObject):
         self._reformatLineLength = self._settings.value('reformatLineLength', 40, type=int)
         self._reformatPageLength = self._settings.value('reformatPageLength', 20, type=int)
         self._reformatWordSplitter = self._settings.value('reformatWordSplitter', '-', type=str)
-        self._reformatKeepPageNo = self._settings.value('reformatKeepPageNo', True, type=bool)  
+        self._reformatKeepPageNo = self._settings.value('reformatKeepPageNo', False, type=bool)  
 
         #public members
         self.inputText = ''
@@ -118,6 +119,7 @@ class EnBrailleData(QObject):
     def reformatKeepPageNo(self, value: bool) -> None:
         if self._reformatPageLength != value:
             self._reformatPageLength = value
+            logging.debug('reformatKeepPageNo: {}'.format(value))
 
             self._settings.setValue('reformatPageLength', value)
             self._settings.sync()

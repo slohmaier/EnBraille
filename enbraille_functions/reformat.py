@@ -258,7 +258,8 @@ class EnBrailleReformatPage(QWizardPage):
         self.completeChanged.emit()
     
     def onKeepPageNoCheckBoxStateChanged(self, state: int) -> None:
-        self.data.reformatKeepPageNo = state == Qt.Checked      
+        logging.debug('onKeepPageNoCheckBoxStateChanged: ' + str(state == 2))
+        self.data.reformatKeepPageNo = state == 2
 
 class EnBrailleReformaterWorker(QThread):
     finished = Signal()
