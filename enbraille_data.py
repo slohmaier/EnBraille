@@ -39,6 +39,7 @@ class EnBrailleData(QObject):
         self._reformatLineLength = self._settings.value('reformatLineLength', 40, type=int)
         self._reformatPageLength = self._settings.value('reformatPageLength', 20, type=int)
         self._reformatWordSplitter = self._settings.value('reformatWordSplitter', '-', type=str)
+        self._reformatKeepPageNo = self._settings.value('reformatKeepPageNo', True, type=bool)  
 
         #public members
         self.inputText = ''
@@ -108,3 +109,16 @@ class EnBrailleData(QObject):
 
             self._settings.setValue('reformatWordSplitter', value)
             self._settings.sync()
+    
+    @property
+    def reformatKeepPageNo(self) -> bool:
+        return self._reformatPageLength > 0
+    
+    @reformatKeepPageNo.setter
+    def reformatKeepPageNo(self, value: bool) -> None:
+        if self._reformatPageLength != value:
+            self._reformatPageLength = value
+
+            self._settings.setValue('reformatPageLength', value)
+            self._settings.sync()
+        

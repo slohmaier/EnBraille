@@ -9,7 +9,7 @@ from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout, QWizard,
                                QLabel, QLineEdit, QMessageBox, QPushButton, QSizePolicy,
                                QProgressBar, QWizard, QWizardPage, QHBoxLayout, QSpacerItem,
-                               QTextEdit, QVBoxLayout,)
+                               QTextEdit, QVBoxLayout, QCheckBox)
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_widgets import EnBrailleTableComboBox
@@ -194,9 +194,14 @@ class EnBrailleReformatPage(QWizardPage):
         self.layout.addWidget(self.wordSplitterWarningLabel, row, 2)
         row += 1
 
+        self._checkboxKeepPageNo = QCheckBox(self.tr('Keep page numbers'))
+        self._checkboxKeepPageNo.stateChanged.connect(self.onKeepPageNoCheckBoxStateChanged)
+        self.layout.addWidget(self._checkboxKeepPageNo, row, 1, 1, 2)
+
         self.lineLengthSpinBox.setValue(self.data.reformatLineLength)
         self.pageLengthSpinBox.setValue(self.data.reformatPageLength)
         self.wordSplitterLineEdit.setText(self.data.reformatWordSplitter)
+        self._checkboxKeepPageNo.setChecked(self.data.reformatKeepPageNo)   
     
     def cleanupPage(self) -> None:
         pass
@@ -239,6 +244,9 @@ class EnBrailleReformatPage(QWizardPage):
         self.data.reformatWordSplitter = text
         self.wordSplitterWarningLabel.setVisible(len(self.data.reformatWordSplitter) != 1)
         self.completeChanged.emit()
+    
+    def onKeepPageNoCheckBoxStateChanged(self, state: int) -> None:
+        self.data.reformatKeepPageNo = state == Qt.Checked      
 
 class EnBrailleReformaterWorker(QThread):
     finished = Signal()
