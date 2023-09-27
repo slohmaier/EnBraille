@@ -69,7 +69,11 @@ class EnBrailleReformater(QObject):
         logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
         for line in lines:
             if self._pagenoregex.match(line):
-                pass
+                if data.reformatKeepPageNo:
+                    origPageStr = line.strip()
+                    paragraphs.append(' '*(data.reformatLineLength-len(origPageStr)) + origPageStr)
+                    paragraphs.append('')
+                    paragraphAdded = True
             else:
                 paragraphAdded = False
                 if line.startswith(' '):
