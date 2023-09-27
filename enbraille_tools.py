@@ -1,36 +1,22 @@
 import logging
 
 def reformatPragraph(paragraph: str, lineLength: int, lineSeperator: str) -> list[str]:
-    lines = []
-    paraLen = len(paragraph)
-    i = 0
-    while i < paraLen:
-        addSeperator = False
+    lines = ['']
+    words = paragraph.split(' ')
 
-        #move start of new line to none whitespace
-        while paragraph[i].isspace() and i < paraLen:
-            i += 1
-        
-        #move back of new line until non whitespace
-        endi = i + lineLength - 1
-        if endi >= paraLen:
-            endi = paraLen -1
-        while paragraph[endi].isspace() and endi > i:
-            endi -= 1
-        
-        #seperate non-whitesapce word
-        if endi + 1 < paraLen and not paragraph[endi].isspace():
-            endi -= 1
-            addSeperator = True
-        
+    for word in words:
+        lineLen = len(lines[-1])
+        wordLen = len(word)
 
-        line = paragraph[i:endi]
-
-        if addSeperator:
-            line += lineSeperator
-        
-        lines.append(line)
-        i = endi + 1
+        if lineLen + wordLen + 1 <= lineLength:
+            lines[-1] += word + ' '
+        else:
+            if lineLen - wordLen <= 2:
+                splitPos = lineLength - 2 - lineLen
+                lines[-1] += word[:splitPos] + lineSeperator
+                lines.append(word[splitPos:] + ' ')
+            else:
+                lines.append(word + ' ')
 
     return lines
 

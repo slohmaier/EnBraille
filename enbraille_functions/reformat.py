@@ -18,6 +18,7 @@ from libbrl import libbrlImpl
 
 class EnBrailleReformater(QObject):
     _pagenoregex = re.compile(r'^\s+\#\w+\s*$')
+    _pagenoprefix = '\t'
 
     def __init__(self, filename: str) -> None:
         self._filename = filename
@@ -59,7 +60,13 @@ class EnBrailleReformater(QObject):
             paragraphs = self._parseParagraphs(f, data)
             lines = []
             for paragraph in paragraphs:
-                lines.extend(reformatPragraph(paragraph, data.reformatLineLength, data.reformatWordSplitter))
+                logging.debug('Reformating paragraph: ' + paragraph)
+                if len(paragraph) > 0 and paragraph[0] == self._pagenoprefix:
+                    pageStr = paragraph.strip()
+                    pageStr = ' '* (data.reformatLineLength - len(pageStr) - 1) + pageStr
+                    lines.append(pageStr)
+                else:
+                    lines.extend(reformatPragraph(paragraph, data.reformatLineLength, data.reformatWordSplitter))
             logging.debug('Reformated to {} lines'.format(len(lines)))
             return generateOutput(lines, data.reformatPageLength, data.reformatLineLength)
     
@@ -71,9 +78,10 @@ class EnBrailleReformater(QObject):
             if self._pagenoregex.match(line):
                 if data.reformatKeepPageNo:
                     origPageStr = line.strip()
-                    paragraphs.append(' '*(data.reformatLineLength-len(origPageStr)) + origPageStr)
+                    paragraphs.append(self._pagenoprefix + origPageStr)
                     paragraphs.append('')
                     paragraphAdded = True
+                    print('added page number')
             else:
                 paragraphAdded = False
                 if line.startswith(' '):
@@ -262,8 +270,10 @@ class EnBrailleReformaterWorker(QThread):
 
     def run(self) -> None:
         try:
+            logging.debug('Reformating file: ' + self.data.reformatFilename)
             reformater = EnBrailleReformater(self.data.reformatFilename)
             self.data.outputData = reformater.reformat(self.progress, self.data)
+            logging.debug('Reformated to {} lines'.format(len(self.data.outputData.splitlines())))
         except Exception as e:
             logging.debug('Error while reformatting: ' + str(e) + '\n' + traceback.format_exc())
             self.progress.emit(-1, self.tr('Error while reformatting: ') + str(e))
