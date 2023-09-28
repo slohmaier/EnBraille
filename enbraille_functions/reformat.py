@@ -60,10 +60,10 @@ class EnBrailleReformater(QObject):
             paragraphs = self._parseParagraphs(f, data)
             lines = []
             for paragraph in paragraphs:
-                logging.debug('Reformating paragraph: ' + paragraph)
                 if len(paragraph) > 0 and paragraph[0] == self._pagenoprefix:
                     pageStr = paragraph.strip()
                     pageStr = ' '* (data.reformatLineLength - len(pageStr) - 1) + pageStr
+                    logging.debug('added page number in output: ' + pageStr)
                     lines.append(pageStr)
                 else:
                     lines.extend(reformatPragraph(paragraph, data.reformatLineLength, data.reformatWordSplitter))
@@ -76,12 +76,13 @@ class EnBrailleReformater(QObject):
         logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
         for line in lines:
             if self._pagenoregex.match(line):
+                logging.debug('parsing line with pageno: "' + line + '"')
                 if data.reformatKeepPageNo:
                     origPageStr = line.strip()
                     paragraphs.append(self._pagenoprefix + origPageStr)
                     paragraphs.append('')
                     paragraphAdded = True
-                    print('added page number')
+                    logging.debug('added page number: ' + origPageStr)
             else:
                 paragraphAdded = False
                 if line.startswith(' '):
