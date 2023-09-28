@@ -378,9 +378,23 @@ class EnBrailleReformaterResultPage(QWizardPage):
         self.frame.layout().addWidget(self.textEdit)
         row += 1
 
+        self.saveButton = QPushButton(self.tr('&Save'))
+        self.saveButton.clicked.connect(self.onSaveButtonClicked)
+        self.layout.addWidget(self.saveButton, row, 0)
+        row += 1
+
     def cleanupPage(self) -> None:
         pass
 
     def initializePage(self) -> None:
         self.textEdit.setText(self.data.outputData)
+    
+    def onSaveButtonClicked(self) -> None:
+        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), '', self.tr('Braille files (*.brl)'))[0]
+        if filename:
+            try:
+                with open(filename, 'w') as f:
+                    f.write(self.data.outputData)
+            except Exception as e:
+                QMessageBox.critical(self, self.tr('Error'), self.tr('Error while saving file: ') + str(e))
         
