@@ -16,7 +16,10 @@ if __name__ == "__main__":
     logLevel = logging.INFO
 
     parser = ArgumentParser()
+
     parser.add_argument("-d", '--debug', action='store_true', help='activate debug logging')
+    parser.add_argument('-r', '--reset', action='store_true', help='reset settings to default values')
+
     args = parser.parse_args()
 
     if args.debug:
@@ -31,6 +34,8 @@ if __name__ == "__main__":
     app.setApplicationVersion("0.1.0")
     
     embrailledata = EnBrailleData(app)
+    if args.reset:
+        embrailledata.resetSettings()   
     enrailleWindow = EnBrailleWindow(data=embrailledata)
     enrailleWindow.show()
 

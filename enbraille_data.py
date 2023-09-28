@@ -33,29 +33,25 @@ class EnBrailleData(QObject):
         super().__init__(None)
 
         self._settings = QSettings(app.organizationName(), app.applicationName())
-
-        mainFunctionStr = self._settings.value('mainFunction', str(EnBrailleMainFct.TEXT), type=str)
-        self._mainFunction: EnBrailleMainFct = EnBrailleMainFct.fromStr(mainFunctionStr)
-        self._textTable: str = self._settings.value('textTable', '', type=str)
-        self._reformatLineLength = self._settings.value('reformatLineLength', 40, type=int)
-        self._reformatPageLength = self._settings.value('reformatPageLength', 20, type=int)
-        self._reformatWordSplitter = self._settings.value('reformatWordSplitter', '-', type=str)
-        self._reformatKeepPageNo = self._settings.value('reformatKeepPageNo', False, type=bool)  
+    
 
         #public members
         self.inputText = ''
         self.outputText = ''
         self.reformatFilename = ''
+
+    def resetSettings(self) -> None:
+        self._settings.clear()
+        self._settings.sync()
     
     @property
     def mainFunction(self) -> EnBrailleMainFct:
-        return self._mainFunction
+        s = self._settings.value('mainFunction', str(EnBrailleMainFct.TEXT), type=str)
+        return EnBrailleMainFct.fromStr(s)
     
     @mainFunction.setter
     def mainFunction(self, value: EnBrailleMainFct) -> None:
-        if self._mainFunction != value:
-            self._mainFunction = value
-            
+        if self.mainFunction != value:
             self._settings.setValue('mainFunction', str(value))
             self._settings.sync()
 
@@ -63,13 +59,12 @@ class EnBrailleData(QObject):
         
     @property
     def textTable(self) -> str:
-        return self._textTable
+        return self._settings.value('textTable', '', type=str)
     
     @textTable.setter
     def textTable(self, value: str) -> None:    
-        if self._textTable != value:
-            self._textTable = value
-
+        if self.textTable != value:
+            logging.debug('EnBrailleData: setting textTable to ' + str(value))
             self._settings.setValue('textTable', value)
             self._settings.sync()
 
@@ -77,50 +72,45 @@ class EnBrailleData(QObject):
     
     @property
     def reformatLineLength(self) -> int:
-        return self._reformatLineLength
+        return self._settings.value('reformatLineLength', 40, type=int)
     
     @reformatLineLength.setter
     def reformatLineLength(self, value: int) -> None:
-        if self._reformatLineLength != value:
-            self._reformatLineLength = value
-
+        if self.reformatLineLength != value:
+            logging.debug('EnBrailleData: setting reformatLineLength to ' + str(value))
             self._settings.setValue('reformatLineLength', value)
             self._settings.sync()
     
     @property
     def reformatPageLength(self) -> int:
-        return self._reformatPageLength
+        return self._settings.value('reformatPageLength', 0, type=int)
     
     @reformatPageLength.setter
     def reformatPageLength(self, value: int) -> None:
-        if self._reformatPageLength != value:
-            self._reformatPageLength = value
-
+        if self.reformatPageLength != value:
+            logging.debug('EnBrailleData: setting reformatPageLength to ' + str(value)) 
             self._settings.setValue('reformatPageLength', value)
             self._settings.sync()
     
     @property
     def reformatWordSplitter(self) -> str:
-        return self._reformatWordSplitter
+        return self._settings.value('reformatWordSplitter', '-', type=str)
     
     @reformatWordSplitter.setter
     def reformatWordSplitter(self, value: str) -> None:
-        if self._reformatWordSplitter != value:
-            self._reformatWordSplitter = value
-
+        if self.reformatWordSplitter != value:
+            logging.debug('EnBrailleData: setting reformatWordSplitter to ' + str(value))
             self._settings.setValue('reformatWordSplitter', value)
             self._settings.sync()
     
     @property
     def reformatKeepPageNo(self) -> bool:
-        return self._reformatPageLength > 0
+        return self._settings.value('reformatKeepPageNo', False, type=bool)
     
     @reformatKeepPageNo.setter
     def reformatKeepPageNo(self, value: bool) -> None:
-        if self._reformatPageLength != value:
-            self._reformatPageLength = value
-            logging.debug('reformatKeepPageNo: {}'.format(value))
-
-            self._settings.setValue('reformatPageLength', value)
+        if self.reformatPageLength != value:
+            logging.debug('EnBrailleData: setting reformatKeepPageNo to ' + str(value))
+            self._settings.setValue('reformatKeepPageNo', value)
             self._settings.sync()
         
