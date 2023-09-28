@@ -4,6 +4,7 @@
 
 import logging
 import sys
+from argparse import ArgumentParser
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
@@ -12,7 +13,16 @@ from enbraille_gui import EnBrailleWindow
 from enbraille_data import EnBrailleData
 
 if __name__ == "__main__":
-    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
+    logLevel = logging.INFO
+
+    parser = ArgumentParser()
+    parser.add_argument("-d", '--debug', action='store_true', help='activate debug logging')
+    args = parser.parse_args()
+
+    if args.debug:
+        logLevel = logging.DEBUG
+
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=logLevel)
 
     app = QApplication(sys.argv)
     app.setApplicationName("EnBraille")
