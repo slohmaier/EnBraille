@@ -75,8 +75,14 @@ class EnBrailleReformater(QObject):
         lines = inputFile.readlines()
         logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
         for line in lines:
+            #strip possible newline characters from end
+            while line.endswith('\n') or line.endswith('\r'):
+                line = line[:-1]
+
+            #old page numbers are handled seperatley
             if self._pagenoregex.match(line):
                 logging.debug('parsing line with pageno: "' + line + '"')
+                #to keep old page numbers we mark them with a character in front
                 if data.reformatKeepPageNo:
                     origPageStr = line.strip()
                     paragraphs.append(self._pagenoprefix + origPageStr)
@@ -85,20 +91,24 @@ class EnBrailleReformater(QObject):
                     logging.debug('added page number: ' + origPageStr)
             else:
                 paragraphAdded = False
-                if line.startswith(' '):
+                #new paragraphs are makred with leading spaces, don't do it if already new paragraph
+                if line.startswith(' ') and paragraphs[-1] != '':
                     paragraphs.append('')
                     paragraphAdded = True
 
-                line = line.strip()
-
+                #if line is split by word splitter strip it
                 if line.endswith(data.reformatWordSplitter):
-                    paragraphs[-1] += line[:-1]
-                    continue
+                    line = line[:-1]
+
+                #normalize lines to at most 2 leading spaces
+                while line.startswith('   '):
+                    line = line[1:]
 
                 paragraphs[-1] += line
 
-                if len(line) < self.maxLineLength-2 and not paragraphAdded:
-                    paragraphs.append
+                #if line is too short it indicates paragraph end
+                if len(line) < self.maxLineLength-3 and not paragraphAdded:
+                    paragraphs.append('')
         
         logging.debug('Found {} paragraphs'.format(len(paragraphs)))
         return paragraphs
