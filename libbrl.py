@@ -41,7 +41,7 @@ class libbrlLouis(libbrlInterface):
                 list_path = ctypes.string_at(table_item_ptr).decode("utf-8")
                 
                 table_filename = os.path.basename(list_path)    
-                with open(table_item_ptr, 'r') as f:
+                with open(table_item_ptr, 'r', encoding='utf-8') as f:
                     first_line = f.readline().strip()
                     if first_line.startswith('# liblouis: '):
                         table_name = first_line.split(':', 1)[1].strip()
