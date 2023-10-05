@@ -4,7 +4,7 @@ from libbrl import libbrlImpl
 from enbraille_data import EnBrailleData
 
 class EnBrailleTableComboBox(QComboBox):
-    def __init__(self, data: EnBrailleData, parent: QWidget | None = None) -> None:
+    def __init__(self, data: EnBrailleData, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.data = data
 
