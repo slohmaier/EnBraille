@@ -85,16 +85,17 @@ class EnBrailleReformater(QObject):
                 #to keep old page numbers we mark them with a character in front
                 if data.reformatKeepPageNo:
                     origPageStr = line.strip()
+                    while paragraphs[-1].endswith(' '):
+                        paragraphs[-1] = paragraphs[-1][:-1]
                     paragraphs.append(self._pagenoprefix + origPageStr)
                     paragraphs.append('')
-                    paragraphAdded = True
                     logging.debug('added page number: ' + origPageStr)
             else:
-                paragraphAdded = False
                 #new paragraphs are makred with leading spaces, don't do it if already new paragraph
                 if line.startswith(' ') and paragraphs[-1] != '':
+                    while paragraphs[-1].endswith(' '):
+                        paragraphs[-1] = paragraphs[-1][:-1]
                     paragraphs.append('')
-                    paragraphAdded = True
 
                 #if line is split by word splitter strip it
                 if line.endswith(data.reformatWordSplitter):
@@ -104,10 +105,12 @@ class EnBrailleReformater(QObject):
                 while line.startswith('   '):
                     line = line[1:]
 
-                paragraphs[-1] += line
+                paragraphs[-1] += line + ' '
 
                 #if line is too short it indicates paragraph end
-                if len(line) < self.maxLineLength-3 and not paragraphAdded:
+                if len(line) < self.maxLineLength-3:
+                    while paragraphs[-1].endswith(' '):
+                        paragraphs[-1] = paragraphs[-1][:-1]
                     paragraphs.append('')
         
         logging.debug('Found {} paragraphs'.format(len(paragraphs)))

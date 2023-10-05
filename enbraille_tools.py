@@ -12,7 +12,7 @@ def reformatPragraph(paragraph: str, lineLength: int, lineSeperator: str) -> lis
             lines[-1] += word + ' '
         else:
             if lineLen - wordLen <= 2:
-                splitPos = lineLength - 2 - lineLen
+                splitPos = lineLength - 1 - lineLen
                 lines[-1] += word[:splitPos] + lineSeperator
                 word = word[splitPos:]
             
