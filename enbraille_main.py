@@ -3,6 +3,7 @@
 '''
 
 import logging
+import qdarktheme
 import sys
 from argparse import ArgumentParser
 from PySide6.QtCore import Qt
@@ -32,6 +33,8 @@ if __name__ == "__main__":
     app.setOrganizationName("slohmaier")
     app.setOrganizationDomain("slohmaier.de")
     app.setApplicationVersion("0.1.0")
+
+    qdarktheme.setup_theme()
     
     embrailledata = EnBrailleData(app)
     if args.reset:
