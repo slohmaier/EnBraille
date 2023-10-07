@@ -4,25 +4,28 @@ def reformatPragraph(paragraph: str, lineLength: int, lineSeperator: str) -> lis
     lines = ['']
     words = paragraph.split(' ')
 
-    for word in words:
-        lineLen = len(lines[-1])
-        wordLen = len(word)
+    if lineLength < 1:
+        lines[-1] = ' '.join(words)
+    else:
+        for word in words:
+            lineLen = len(lines[-1])
+            wordLen = len(word)
 
-        if lineLen + wordLen + 1 <= lineLength:
-            lines[-1] += word + ' '
-        elif lineLen + wordLen == lineLength:
-            lines[-1] += word
-            lines.append('')
-        else:
-            if lineLen - wordLen > 2:
-                splitPos = lineLength - 1 - lineLen
-                lines[-1] += word[:splitPos] + lineSeperator
-                word = word[splitPos:]
-            
-            while len(word) > lineLength:
-                lines.append(word[:lineLength-1] + lineSeperator)
-                word = word[lineLength-1:]
-            lines.append(word + ' ')
+            if lineLen + wordLen + 1 <= lineLength:
+                lines[-1] += word + ' '
+            elif lineLen + wordLen == lineLength:
+                lines[-1] += word
+                lines.append('')
+            else:
+                if lineLen - wordLen > 2:
+                    splitPos = lineLength - 1 - lineLen
+                    lines[-1] += word[:splitPos] + lineSeperator
+                    word = word[splitPos:]
+                
+                while len(word) > lineLength:
+                    lines.append(word[:lineLength-1] + lineSeperator)
+                    word = word[lineLength-1:]
+                lines.append(word + ' ')
 
     return lines
 
