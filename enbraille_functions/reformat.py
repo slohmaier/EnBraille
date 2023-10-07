@@ -73,6 +73,7 @@ class EnBrailleReformater(QObject):
     def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
         paragraphs = ['']
         lines = inputFile.readlines()
+        lineRamainder = ''
         logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
         for line in lines:
             #strip possible newline characters from end
@@ -91,20 +92,25 @@ class EnBrailleReformater(QObject):
                     paragraphs.append('')
                     logging.debug('added page number: ' + origPageStr)
             else:
+                line = line + lineRamainder
+                lineRamainder = ''
+
                 #new paragraphs are makred with leading spaces, don't do it if already new paragraph
                 if line.startswith(' ') and paragraphs[-1] != '':
                     while paragraphs[-1].endswith(' '):
                         paragraphs[-1] = paragraphs[-1][:-1]
                     paragraphs.append('')
 
-                #if line is split by word splitter strip it
-                if line.endswith(data.reformatWordSplitter):
-                    line = line[:-1]
-
                 #normalize lines to at most 2 leading spaces
                 while line.startswith('   '):
                     line = line[1:]
 
+                #if line is split by word splitter strip it
+                if line.endswith(data.reformatWordSplitter):
+                    line = line[:-1]
+                    lineRamainder = line
+                    continue
+                
                 paragraphs[-1] += line + ' '
 
                 #if line is too short it indicates paragraph end
