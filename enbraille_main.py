@@ -28,6 +28,8 @@ if __name__ == "__main__":
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logLevel)
 
+    import enbraille_resources as _
+
     app = QApplication(sys.argv)
     app.setApplicationName("EnBraille")
     app.setOrganizationName("slohmaier")

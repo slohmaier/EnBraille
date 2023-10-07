@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from PySide6.QtCore import Qt, Slot
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
                                QWidget, QWizard, QWizardPage)
 
@@ -16,6 +17,7 @@ class EnBrailleWindow(QWizard):
         super().__init__()
         self.data = data
 
+        self.setWindowIcon(QIcon(":/assets/Icon.png"))
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
         self.startPage = EnBrailleWizardPageStart(data)
