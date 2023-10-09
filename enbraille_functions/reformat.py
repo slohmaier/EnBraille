@@ -73,50 +73,34 @@ class EnBrailleReformater(QObject):
     def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
         paragraphs = ['']
         lines = inputFile.readlines()
-        lineRamainder = ''
         logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
+        wordRemainder = ''
         for line in lines:
-            #strip possible newline characters from end
-            while line.endswith('\n') or line.endswith('\r'):
-                line = line[:-1]
-
-            #old page numbers are handled seperatley
             if self._pagenoregex.match(line):
-                logging.debug('parsing line with pageno: "' + line + '"')
-                #to keep old page numbers we mark them with a character in front
                 if data.reformatKeepPageNo:
-                    origPageStr = line.strip()
-                    while paragraphs[-1].endswith(' '):
-                        paragraphs[-1] = paragraphs[-1][:-1]
-                    paragraphs.append(self._pagenoprefix + origPageStr)
+                    paragraphs.append(self._pagenoprefix + line)
                     paragraphs.append('')
-                    logging.debug('added page number: ' + origPageStr)
+                else:
+                    pass
             else:
-                line = line + lineRamainder
-                lineRamainder = ''
-
-                #new paragraphs are makred with leading spaces, don't do it if already new paragraph
                 if line.startswith(' ') and paragraphs[-1] != '':
-                    while paragraphs[-1].endswith(' '):
-                        paragraphs[-1] = paragraphs[-1][:-1]
                     paragraphs.append('')
 
-                #normalize lines to at most 2 leading spaces
-                while line.startswith('   '):
-                    line = line[1:]
+                words = line.split(' ')
 
-                #if line is split by word splitter strip it
-                if line.endswith(data.reformatWordSplitter):
-                    line = line[:-1]
-                    lineRamainder = line
-                    continue
+                if wordRemainder:
+                    words[0] = wordRemainder + words[0]
+                    wordRemainder = ''
+
+                if words[-1].endswith(data.reformatWordSplitter):
+                    wordRemainder = words[-1][:-1]
+                    words = words[:-1]
+
+                for word in words:
+                    if word:
+                        paragraphs[-1] += word + ' '
                 
-                paragraphs[-1] += line + ' '
-
-                #if line is too short it indicates paragraph end
-                if len(line) < self.maxLineLength-3:
-                    while paragraphs[-1].endswith(' '):
-                        paragraphs[-1] = paragraphs[-1][:-1]
+                if len(line) < data.reformatLineLength-4:
                     paragraphs.append('')
         
         logging.debug('Found {} paragraphs'.format(len(paragraphs)))
