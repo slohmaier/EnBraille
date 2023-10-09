@@ -76,6 +76,9 @@ class EnBrailleReformater(QObject):
         logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
         wordRemainder = ''
         for line in lines:
+            #strip trailing ' ', '\n' and '\r'
+            line = line.rstrip()
+
             if self._pagenoregex.match(line):
                 if data.reformatKeepPageNo:
                     paragraphs.append(self._pagenoprefix + line)
