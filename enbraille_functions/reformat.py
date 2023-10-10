@@ -17,7 +17,7 @@ from enbraille_tools import generateOutput, reformatPragraph
 from libbrl import libbrlImpl
 
 class EnBrailleReformater(QObject):
-    _pagenoregex = re.compile(r'^\s+\#\w+\s*$')
+    _pagenoregex = re.compile(r'^\s+\#\w+$')
     _pagenoprefix = '\t'
 
     def __init__(self, filename: str) -> None:

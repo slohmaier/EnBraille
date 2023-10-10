@@ -11,7 +11,7 @@ def reformatPragraph(paragraph: str, lineLength: int, lineSeperator: str) -> lis
             lineLen = len(lines[-1])
             wordLen = len(word)
 
-            if lineLen + wordLen + 1 <= lineLength:
+            if lineLen + wordLen + 1 < lineLength:
                 lines[-1] += word + ' '
             elif lineLen + wordLen == lineLength:
                 lines[-1] += word
