@@ -6,9 +6,13 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
                                QWidget, QWizard, QWizardPage)
 
+from enbraille_data import EnBrailleData
+
 class EnBrailleDocumentPage(QWizardPage):
-    def __init__(self, parent: QWidget | None = ...) -> None:
-        super().__init__(parent)
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+
+        self._data = data
 
     def cleanupPage(self) -> None:
         pass
@@ -23,8 +27,10 @@ class EnBrailleDocumentPage(QWizardPage):
         return True
 
 class EnBrailleDocumentPageWork(QWizardPage):
-    def __init__(self, parent: QWidget | None = ...) -> None:
-        super().__init__(parent)
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+
+        self._data = data
 
     def cleanupPage(self) -> None:
         pass
@@ -39,8 +45,10 @@ class EnBrailleDocumentPageWork(QWizardPage):
         return True
 
 class EnBrailleDocumentPageOutput(QWizardPage):
-    def __init__(self, parent: QWidget | None = ...) -> None:
-        super().__init__(parent)
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+
+        self._data = data
 
     def cleanupPage(self) -> None:
         pass

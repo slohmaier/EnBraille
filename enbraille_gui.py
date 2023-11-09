@@ -4,13 +4,14 @@ from typing import Optional
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
-                               QWidget, QWizard, QWizardPage)
+                               QWidget, QWizard, QWizardPage, QMessageBox)
 
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 from enbraille_functions.reformat import EnBrailleReformatPage, EnBrailleReformaterWorkPage, EnBrailleReformaterResultPage
 from enbraille_functions.text import (EnBrailleSimpleResultPage,
                                       EnBrailleSimpleTextPage,
                                       EnBrailleSimpleTextWorkPage)
+from enbraille_functions.document import EnBrailleDocumentPage, EnBrailleDocumentPageOutput, EnBrailleDocumentPageWork
 
 class EnBrailleWindow(QWizard):
     def __init__(self, data: EnBrailleData):
@@ -48,6 +49,19 @@ class EnBrailleWindow(QWizard):
         self.reformatResultPage.completeChanged.connect(self.updateNextButtonState)   
         self.addPage(self.reformatResultPage)
 
+        # add pages for document function
+        self.documentPage = EnBrailleDocumentPage(data)
+        self.documentPage.completeChanged.connect(self.updateNextButtonState)
+        self.addPage(self.documentPage)
+
+        self.documentWorkPage = EnBrailleDocumentPage(data)
+        self.documentWorkPage.completeChanged.connect(self.updateNextButtonState)
+        self.addPage(self.documentWorkPage)
+
+        self.documentOutputPage = EnBrailleDocumentPageOutput(data)
+        self.documentOutputPage.completeChanged.connect(self.updateNextButtonState)
+        self.addPage(self.documentOutputPage)
+
         # refresh wizard page visibility based on current main function
         data.mainFunctionChanged.connect(self.onMainFunctionChanged)
         self.currentIdChanged.connect(self.onPageChanged)
@@ -79,6 +93,12 @@ class EnBrailleWindow(QWizard):
             self.addPage(self.reformatPage)
             self.addPage(self.reformatWorkPage)
             self.addPage(self.reformatResultPage)
+        elif mainFunction == EnBrailleMainFct.DOCUMENT:
+            self.addPage(self.documentPage)
+            self.addPage(self.documentWorkPage)
+            self.addPage(self.documentOutputPage)
+        else:
+            raise ValueError('Invalid MainFunction: ' + str(mainFunction))
 
         logging.debug('new main function: ' + str(mainFunction))
         logging.debug('page ids: ' + str(self.pageIds()))
