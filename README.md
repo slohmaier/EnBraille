@@ -1,4 +1,5 @@
 # EnBraille
+![](https://github.com/slohmaier/EnBraille/blob/main/assets/Icon.png?raw=true)
 Translate text or documents to braille text or documents
 
 # Requirements
