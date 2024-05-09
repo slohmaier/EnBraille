@@ -232,18 +232,23 @@ class EnBrailleReformatPage(QWizardPage):
         return os.path.isfile(self.data.reformatFilename) and len(self.data.reformatWordSplitter) == 1
     
     def onChooseButtonClicked(self) -> None:
-        filename = QFileDialog.getOpenFileName(self, self.tr('Choose file to convert'), '', self.tr('Braille files (*.brl)'))[0]
+        filename = QFileDialog.getOpenFileNames(self, self.tr('Choose file to convert'), '', self.tr('Braille files (*.brl)'))[0]
         if filename:
             try:
-                self._reformater = EnBrailleReformater(filename)            
-                self.data.reformatFilename = filename
-                self.filenameLineEdit.setText(filename)
+                if type(filename) == str:
+                    self._reformater = EnBrailleReformater(filename)            
+                    self.filenameLineEdit.setText(filename)
+                    if self._reformater.pageLength > 0:
+                        self.readPageLengthLabel.setText(str(self._reformater.pageLength))  
+                    else:
+                        self.readPageLengthLabel.setText('no pages detected')
+                else:
+                    self._reformater = [EnBrailleReformater(f) for f in filename]
+                    self.filenameLineEdit.setText(len(filename) + ' ' + self.tr('files') + ': ' + ', '.join(filename))
+                    self.readPageLengthLabel.setText(', '.join([str(r.pageLength) for r in self._reformater]))
                 self.data.reformatFilename = filename
                 
-                if self._reformater.pageLength > 0:
-                    self.readPageLengthLabel.setText(str(self._reformater.pageLength))  
-                else:
-                    self.readPageLengthLabel.setText('no pages detected')
+                self.data.reformatFilename = filename
 
                 self.maxLineLengthLabel.setText(str(self._reformater.maxLineLength))
             except Exception as e:
