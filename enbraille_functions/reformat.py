@@ -283,10 +283,17 @@ class EnBrailleReformaterWorker(QThread):
 
     def run(self) -> None:
         try:
-            logging.debug('Reformating file: ' + self.data.reformatFilename)
-            reformater = EnBrailleReformater(self.data.reformatFilename)
-            self.data.outputData = reformater.reformat(self.progress, self.data)
-            logging.debug('Reformated to {} lines'.format(len(self.data.outputData.splitlines())))
+            if type(self.data.reformatFilename) == str:
+                logging.debug('Reformating file: ' + self.data.reformatFilename)
+                reformater = EnBrailleReformater(self.data.reformatFilename)
+                self.data.outputData = reformater.reformat(self.progress, self.data)
+                logging.debug('Reformated to {} lines'.format(len(self.data.outputData.splitlines())))
+            else:
+                self.data.outputData = []
+                for reformater in self.data.reformatFilename:
+                    logging.debug('Reformating file: ' + reformater.filename)
+                    self.data.outputData.append(reformater.reformat(self.progress, self.data))
+                    logging.debug('Reformated to {} lines'.format(len(self.data.outputData.splitlines())))
         except Exception as e:
             logging.debug('Error while reformatting: ' + str(e) + '\n' + traceback.format_exc())
             self.progress.emit(-1, self.tr('Error while reformatting: ') + str(e))
@@ -399,14 +406,30 @@ class EnBrailleReformaterResultPage(QWizardPage):
         pass
 
     def initializePage(self) -> None:
-        self.textEdit.setText(self.data.outputData)
+        if type(self.data.outputData) == str:
+            self.textEdit.setText(self.data.outputData)
+        else:
+            self.textEdit.setText('\n#-#-#-#-#-#-#-#-#-#-#-#-#\n'.join(self.data.outputData))
     
     def onSaveButtonClicked(self) -> None:
-        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), '', self.tr('Braille files (*.brl)'))[0]
-        if filename:
-            try:
-                with open(filename, 'w') as f:
-                    f.write(self.data.outputData)
-            except Exception as e:
-                QMessageBox.critical(self, self.tr('Error'), self.tr('Error while saving file: ') + str(e))
+        if type(self.data.outputData) == str:
+            filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), '', self.tr('Braille files (*.brl)'))[0]
+            if filename:
+                try:
+                    with open(filename, 'w') as f:
+                        f.write(self.data.outputData)
+                except Exception as e:
+                    QMessageBox.critical(self, self.tr('Error'), self.tr('Error while saving file: ') + str(e))
+        else:
+            folder = QFileDialog.getExistingDirectory(self, self.tr('Save files to folder'), '')
+            if folder:
+                for i, outputData in enumerate(self.data.outputData):
+                    filename = os.path.join(folder, os.path.basename(self.data.reformatFilename[i]))
+                    # add _EnBraille to filename before .
+                    filename = filename[:filename.rfind('.')] + '_EnBraille' + filename[filename.rfind('.'):]
+                    try:
+                        with open(filename, 'w') as f:
+                            f.write(outputData)
+                    except Exception as e:
+                        QMessageBox.critical(self, self.tr('Error'), self.tr('Error while saving file: ') + str(e))
         
