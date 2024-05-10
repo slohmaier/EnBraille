@@ -33,7 +33,6 @@ class EnBrailleData(QObject):
         super().__init__(None)
 
         self._settings = QSettings(app.organizationName(), app.applicationName())
-    
 
         #public members
         self.inputText = ''

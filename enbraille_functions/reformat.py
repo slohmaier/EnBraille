@@ -229,7 +229,10 @@ class EnBrailleReformatPage(QWizardPage):
         logging.debug('child widgets: ' + str(self.layout.count())) 
     
     def isComplete(self) -> bool:
-        return os.path.isfile(self.data.reformatFilename) and len(self.data.reformatWordSplitter) == 1
+        if type(self.data.reformatFilename) == str:
+            return os.path.isfile(self.data.reformatFilename) and len(self.data.reformatWordSplitter) == 1
+        else:
+            return all([os.path.isfile(f) for f in self.data.reformatFilename]) and len(self.data.reformatWordSplitter) == 1
     
     def onChooseButtonClicked(self) -> None:
         filename = QFileDialog.getOpenFileNames(self, self.tr('Choose file to convert'), '', self.tr('Braille files (*.brl)'))[0]
@@ -242,16 +245,18 @@ class EnBrailleReformatPage(QWizardPage):
                         self.readPageLengthLabel.setText(str(self._reformater.pageLength))  
                     else:
                         self.readPageLengthLabel.setText('no pages detected')
+                    self.maxLineLengthLabel.setText(str(self._reformater.maxLineLength))
                 else:
                     self._reformater = [EnBrailleReformater(f) for f in filename]
-                    self.filenameLineEdit.setText(len(filename) + ' ' + self.tr('files') + ': ' + ', '.join(filename))
+                    self.filenameLineEdit.setText(str(len(filename)) + ' ' + self.tr('files') + ': ' + ', '.join(filename))
                     self.readPageLengthLabel.setText(', '.join([str(r.pageLength) for r in self._reformater]))
+                    maxlengths = [r.maxLineLength for r in self._reformater]
+                    self.maxLineLengthLabel.setText(str(max(maxlengths)))
                 self.data.reformatFilename = filename
                 
                 self.data.reformatFilename = filename
-
-                self.maxLineLengthLabel.setText(str(self._reformater.maxLineLength))
             except Exception as e:
+                logging.debug('Error while loading file: ' + str(e) + '\n' + traceback.format_exc())
                 QMessageBox.critical(self, self.tr('Error'), self.tr('Error while loading file: ') + str(e))
             
         self.completeChanged.emit()
