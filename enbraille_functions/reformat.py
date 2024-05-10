@@ -295,10 +295,11 @@ class EnBrailleReformaterWorker(QThread):
                 logging.debug('Reformated to {} lines'.format(len(self.data.outputData.splitlines())))
             else:
                 self.data.outputData = []
-                for reformater in self.data.reformatFilename:
-                    logging.debug('Reformating file: ' + reformater.filename)
+                for filename in self.data.reformatFilename:
+                    reformater = EnBrailleReformater(filename)
+                    logging.debug('Reformating file: ' + filename)
                     self.data.outputData.append(reformater.reformat(self.progress, self.data))
-                    logging.debug('Reformated to {} lines'.format(len(self.data.outputData.splitlines())))
+                    logging.debug('Reformated to {} lines'.format(len(self.data.outputData[-1].splitlines())))
         except Exception as e:
             logging.debug('Error while reformatting: ' + str(e) + '\n' + traceback.format_exc())
             self.progress.emit(-1, self.tr('Error while reformatting: ') + str(e))
