@@ -38,6 +38,7 @@ class EnBrailleData(QObject):
         self.inputText = ''
         self.outputText = ''
         self.reformatFilename = ''
+        self.documentFilename = ''
 
     def resetSettings(self) -> None:
         self._settings.clear()
