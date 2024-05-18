@@ -28,6 +28,7 @@ class EnBrailleMainFct(Enum):
 class EnBrailleData(QObject):
     mainFunctionChanged = Signal(EnBrailleMainFct)
     TextTableChanged = Signal(str)
+    DocumentTextTableChanged = Signal(str)
 
     def __init__(self, app: QApplication) -> None:
         super().__init__(None)
@@ -113,4 +114,49 @@ class EnBrailleData(QObject):
             logging.debug('EnBrailleData: setting reformatKeepPageNo to ' + str(value))
             self._settings.setValue('reformatKeepPageNo', value)
             self._settings.sync()
-        
+    
+    @property
+    def documentTextTable(self) -> str:
+        return self._settings.value('documenttextTable', '', type=str)
+    
+    @textTable.setter
+    def documentTextTable(self, value: str) -> None:    
+        if self.documentTextTable != value:
+            logging.debug('EnBrailleData: setting documenttextTable to ' + str(value))
+            self._settings.setValue('documenttextTable', value)
+            self._settings.sync()
+
+            self.DocumentTextTableChanged.emit(value)
+
+    @property
+    def documentLineLength(self) -> int:
+        return self._settings.value('documentLineLength', 40, type=int)
+    
+    @documentLineLength.setter
+    def documentLineLength(self, value: int) -> None:
+        if self.documentLineLength != value:
+            logging.debug('EnBrailleData: setting documentLineLength to ' + str(value))
+            self._settings.setValue('documentLineLength', value)
+            self._settings.sync()
+    
+    @property
+    def documentPageLength(self) -> int:
+        return self._settings.value('documentPageLength', 0, type=int)
+    
+    @documentPageLength.setter
+    def documentPageLength(self, value: int) -> None:
+        if self.documentPageLength != value:
+            logging.debug('EnBrailleData: setting documentPageLength to ' + str(value)) 
+            self._settings.setValue('documentPageLength', value)
+            self._settings.sync()
+    
+    @property
+    def documentWordSplitter(self) -> str:
+        return self._settings.value('documentWordSplitter', '-', type=str)
+    
+    @documentWordSplitter.setter
+    def documentWordSplitter(self, value: str) -> None:
+        if self.documentWordSplitter != value:
+            logging.debug('EnBrailleData: setting documentWordSplitter to ' + str(value))
+            self._settings.setValue('documentWordSplitter', value)
+            self._settings.sync()   
