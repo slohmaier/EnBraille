@@ -10,13 +10,39 @@ from enbraille_data import EnBrailleData
 from enbraille_widgets import EnBrailleTableComboBox
 from util_epib import epub2md
 from PySide6.QtCore import Signal
+from libbrl import libbrlImpl
 import markdown
+import xml.etree.ElementTree as etree
 
 class EnBrailleMd2BRF(markdown.treeprocessors.Treeprocessor):
-    def run(self, doc: markdown.util.etree.Element) -> None:
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+
+        self.data = data
+        self.brl = libbrlImpl()
+        self._headingChars = {}
+        self._headingChars[0] = self._translate(self.data.dcoumentH1Char)
+        self._headingChars[1] = self._translate(self.data.dcoumentH2Char)
+        self._headingChars[2] = self._translate(self.data.dcoumentH3Char)
+        self._headingChars[3] = self._translate(self.data.dcoumentH4Char)
+        self._headingChars[4] = self._translate(self.data.dcoumentH5Char)
+        self._headingChars[5] = self._translate(self.data.dcoumentH6Char)
+
+        self._bulletChars = {}
+        self._bulletChars[0] = self._translate(self.data.documentBulletL1Char)
+        self._bulletChars[1] = self._translate(self.data.documentBulletL2Char)
+        self._bulletChars[2] = self._translate(self.data.documentBulletL3Char)
+        self._bulletChars[3] = self._translate(self.data.documentBulletL4Char)
+        self._bulletChars[4] = self._translate(self.data.documentBulletL5Char)
+        self._bulletChars[5] = self._translate(self.data.documentBulletL6Char)
+    
+    def _translate(self, text: str) -> str:
+        return self.brl.translate(text, self.data.documentTable)
+
+    def run(self, doc: etree.Element) -> None:
         return self.convert_elemnents(doc)
 
-    def convert_elemnents(self, elements: markdown.util.etree.Element) -> None:
+    def convert_elemnents(self, elements: etree.Element) -> None:
         brf = ''
         for element in elements:
             if element.tag == 'p':
@@ -60,7 +86,76 @@ class EnBrailleMd2BRF(markdown.treeprocessors.Treeprocessor):
             elif element.tag == 'th':
                 brf += self.convert_table_header(element)
             else:
-                brf += self.convert_elemnents(element)
+                logging.warning('Unsupported element: ' + element.tag)
+                brf += self._translate(element.text) + '\n'
+        return brf
+    
+    def convert_paragraph(self, element: etree.Element) -> str:
+        return self._translate(element.text) + '\n'
+    
+    def convert_heading(self, element: etree.Element, level: int) -> str:
+        headingText = self._translate(element.text)
+        lineLength = min(len(headingText), self.data.documentLineLength)
+        return self._headingChars[level] + '\n' + headingText[:lineLength] + '\n'     
+    
+    def convert_unordered_list(self, element: etree.Element) -> str:
+        brf = ''
+        for i, li in enumerate(element):
+            brf += self._bulletChars[i % 6] + ' ' + self.convert_elemnents(li)
+        return brf
+    
+    def convert_ordered_list(self, element: etree.Element) -> str:
+        brf = ''
+        for i, li in enumerate(element):
+            brf += str(i + 1) + '. ' + self.convert_elemnents(li)
+        return brf
+    
+    def convert_blockquote(self, element: etree.Element) -> str:
+        #TODO: mark blockquote
+        return self.convert_elemnents(element) + '\n'
+    
+    def convert_preformatted(self, element: etree.Element) -> str:
+        #TODO: mark preformatted
+        return self._translate(element.text) + '\n'
+    
+    def convert_code(self, element: etree.Element) -> str:
+        #TODO: mark code
+        return self._translate(element.text) + '\n'
+    
+    def convert_image(self, element: etree.Element) -> str:
+        #TODO: how to handle images?
+        return ''
+    
+    def convert_link(self, element: etree.Element) -> str:
+        # print as "text" (url)
+        return self._translate(element.text + ' (' + element.get('href') + ')')
+
+    def convert_horizontal_rule(self, element: etree.Element) -> str:
+        lineLength = min(self.data.documentLineLength, 8)
+        return self._translate('-') * lineLength + '\n'
+
+    def convert_line_break(self, element: etree.Element) -> str:
+        return '\n'
+    
+    def convert_table(self, element: etree.Element) -> str:
+        brf = ''
+        #TODO: handle table
+        return brf
+
+    def convert_table_row(self, element: etree.Element) -> str:
+        brf = ''
+        #TODO: handle table row
+        return brf
+
+    def convert_table_data(self, element: etree.Element) -> str:
+        brf = ''
+        #TODO: handle table data
+        return brf
+    
+    def convert_table_header(self, element: etree.Element) -> str:
+        brf = ''
+        #TODO: handle table header
+        return brf
 
 class EnBrailleDocumentConverter(QObject):
     progress = Signal(int, str)
@@ -83,7 +178,9 @@ class EnBrailleDocumentConverter(QObject):
         # parse amrkdown
         doc = markdown.markdown(mdContent)
 
-        doc.
+        docProcessor = EnBrailleMd2BRF(self.data)
+        brf = docProcessor.run(doc)
+        #TODO save brf to file
 
         proggressCallback(100)
 
