@@ -160,3 +160,135 @@ class EnBrailleData(QObject):
             logging.debug('EnBrailleData: setting documentWordSplitter to ' + str(value))
             self._settings.setValue('documentWordSplitter', value)
             self._settings.sync()   
+        
+    @property
+    def dcoumentH1Char(self) -> str:
+        return self._settings.value('document/H1Char', '#', type=str)
+
+    @dcoumentH1Char.setter
+    def dcoumentH1Char(self, value: str) -> None:
+        if self.dcoumentH1Char != value:
+            logging.debug('EnBrailleData: setting dcoumentH1Char to ' + str(value))
+            self._settings.setValue('document/H1Char', value)
+            self._settings.sync()
+    
+    @property
+    def dcoumentH2Char(self) -> str:
+        return self._settings.value('document/H2Char', '=', type=str)
+    
+    @dcoumentH2Char.setter
+    def dcoumentH2Char(self, value: str) -> None:
+        if self.dcoumentH2Char != value:
+            logging.debug('EnBrailleData: setting dcoumentH2Char to ' + str(value))
+            self._settings.setValue('document/H2Char', value)
+            self._settings.sync()
+
+    @property
+    def dcoumentH3Char(self) -> str:
+        return self._settings.value('document/H3Char', '-', type=str)
+    
+    @dcoumentH3Char.setter
+    def dcoumentH3Char(self, value: str) -> None:
+        if self.dcoumentH3Char != value:
+            logging.debug('EnBrailleData: setting dcoumentH3Char to ' + str(value))
+            self._settings.setValue('document/H3Char', value)
+            self._settings.sync()
+
+    @property
+    def dcoumentH4Char(self) -> str:
+        return self._settings.value('document/H4Char', '.', type=str)
+    
+    @dcoumentH4Char.setter
+    def dcoumentH4Char(self, value: str) -> None:
+        if self.dcoumentH4Char != value:
+            logging.debug('EnBrailleData: setting dcoumentH4Char to ' + str(value))
+            self._settings.setValue('document/H4Char', value)
+            self._settings.sync()
+
+    @property
+    def dcoumentH5Char(self) -> str:
+        return self._settings.value('document/H5Char', ',', type=str)
+    
+    @dcoumentH5Char.setter
+    def dcoumentH5Char(self, value: str) -> None:
+        if self.dcoumentH5Char != value:
+            logging.debug('EnBrailleData: setting dcoumentH5Char to ' + str(value))
+            self._settings.setValue('document/H5Char', value)
+            self._settings.sync()
+    
+    @property
+    def dcoumentH6Char(self) -> str:
+        return self._settings.value('document/H6Char', ';', type=str)
+    
+    @dcoumentH6Char.setter
+    def dcoumentH6Char(self, value: str) -> None:
+        if self.dcoumentH6Char != value:
+            logging.debug('EnBrailleData: setting dcoumentH6Char to ' + str(value))
+            self._settings.setValue('document/H6Char', value)
+            self._settings.sync()
+    
+    @property
+    def documentBulletL1Char(self) -> str:
+        return self._settings.value('document/BulletL1Char', '*', type=str)
+    
+    @documentBulletL1Char.setter
+    def documentBulletL1Char(self, value: str) -> None:
+        if self.documentBulletL1Char != value:
+            logging.debug('EnBrailleData: setting documentBulletL1Char to ' + str(value))
+            self._settings.setValue('document/BulletL1Char', value)
+            self._settings.sync()
+    
+    @property
+    def documentBulletL2Char(self) -> str:
+        return self._settings.value('document/BulletL2Char', '+', type=str)
+
+    @documentBulletL2Char.setter
+    def documentBulletL2Char(self, value: str) -> None:
+        if self.documentBulletL2Char != value:
+            logging.debug('EnBrailleData: setting documentBulletL2Char to ' + str(value))
+            self._settings.setValue('document/BulletL2Char', value)
+            self._settings.sync()
+    
+    @property
+    def documentBulletL3Char(self) -> str:
+        return self._settings.value('document/BulletL3Char', '-', type=str)
+    
+    @documentBulletL3Char.setter
+    def documentBulletL3Char(self, value: str) -> None:
+        if self.documentBulletL3Char != value:
+            logging.debug('EnBrailleData: setting documentBulletL3Char to ' + str(value))
+            self._settings.setValue('document/BulletL3Char', value)
+            self._settings.sync()
+    
+    @property
+    def documentBulletL4Char(self) -> str:
+        return self._settings.value('document/BulletL4Char', '.', type=str)
+    
+    @documentBulletL4Char.setter
+    def documentBulletL4Char(self, value: str) -> None:
+        if self.documentBulletL4Char != value:
+            logging.debug('EnBrailleData: setting documentBulletL4Char to ' + str(value))
+            self._settings.setValue('document/BulletL4Char', value)
+            self._settings.sync()
+    
+    @property
+    def documentBulletL5Char(self) -> str:
+        return self._settings.value('document/BulletL5Char', ',', type=str)
+
+    @documentBulletL5Char.setter
+    def documentBulletL5Char(self, value: str) -> None:
+        if self.documentBulletL5Char != value:
+            logging.debug('EnBrailleData: setting documentBulletL5Char to ' + str(value))
+            self._settings.setValue('document/BulletL5Char', value)
+            self._settings.sync()
+    
+    @property
+    def documentBulletL6Char(self) -> str:
+        return self._settings.value('document/BulletL6Char', ';', type=str)
+    
+    @documentBulletL6Char.setter
+    def documentBulletL6Char(self, value: str) -> None:
+        if self.documentBulletL6Char != value:
+            logging.debug('EnBrailleData: setting documentBulletL6Char to ' + str(value))
+            self._settings.setValue('document/BulletL6Char', value)
+            self._settings.sync()

@@ -4,9 +4,88 @@ import os
 from PySide6.QtWidgets import (QPushButton, QGridLayout, QLabel, QRadioButton,
                                QWidget, QFrame, QWizardPage, QLineEdit, QHBoxLayout,
                                QFileDialog, QWizardPage, QSpinBox)
-
+from PySide6.QtCore import QObject
+import markdown.treeprocessors
 from enbraille_data import EnBrailleData
 from enbraille_widgets import EnBrailleTableComboBox
+from util_epib import epub2md
+from PySide6.QtCore import Signal
+import markdown
+
+class EnBrailleMd2BRF(markdown.treeprocessors.Treeprocessor):
+    def run(self, doc: markdown.util.etree.Element) -> None:
+        return self.convert_elemnents(doc)
+
+    def convert_elemnents(self, elements: markdown.util.etree.Element) -> None:
+        brf = ''
+        for element in elements:
+            if element.tag == 'p':
+                brf += self.convert_paragraph(element)
+            elif element.tag == 'h1':
+                brf += self.convert_heading(element, 1)
+            elif element.tag == 'h2':
+                brf += self.convert_heading(element, 2)
+            elif element.tag == 'h3':
+                brf += self.convert_heading(element, 3)
+            elif element.tag == 'h4':
+                brf += self.convert_heading(element, 4)
+            elif element.tag == 'h5':
+                brf += self.convert_heading(element, 5)
+            elif element.tag == 'h6':
+                brf += self.convert_heading(element, 6)
+            elif element.tag == 'ul':
+                brf += self.convert_unordered_list(element)
+            elif element.tag == 'ol':
+                brf += self.convert_ordered_list(element)
+            elif element.tag == 'blockquote':
+                brf += self.convert_blockquote(element)
+            elif element.tag == 'pre':
+                brf += self.convert_preformatted(element)
+            elif element.tag == 'code':
+                brf += self.convert_code(element)
+            elif element.tag == 'img':
+                brf += self.convert_image(element)
+            elif element.tag == 'a':
+                brf += self.convert_link(element)
+            elif element.tag == 'hr':
+                brf += self.convert_horizontal_rule(element)
+            elif element.tag == 'br':
+                brf += self.convert_line_break(element)
+            elif element.tag == 'table':
+                brf += self.convert_table(element)
+            elif element.tag == 'tr':
+                brf += self.convert_table_row(element)
+            elif element.tag == 'td':
+                brf += self.convert_table_data(element)
+            elif element.tag == 'th':
+                brf += self.convert_table_header(element)
+            else:
+                brf += self.convert_elemnents(element)
+
+class EnBrailleDocumentConverter(QObject):
+    progress = Signal(int, str)
+
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+
+        self.data = data
+
+    def convert(self, proggressCallback: callable) -> None:
+        mdContent : str  = None
+        if self.data.documentFilename.endswith('.epub'):
+            mdContent = epub2md(self.data.documentFilename, self.data.documentFilename + '.md')
+        elif self.data.documentFilename.endswith('.md'):
+            with open(self.data.documentFilename, 'r') as f:
+                mdContent = f.read()
+        else:
+            raise ValueError('Unsupported file format')
+    
+        # parse amrkdown
+        doc = markdown.markdown(mdContent)
+
+        doc.
+
+        proggressCallback(100)
 
 class EnBrailleDocumentPage(QWizardPage):
     def __init__(self, data: EnBrailleData) -> None:

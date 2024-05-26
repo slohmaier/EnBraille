@@ -1,6 +1,8 @@
 import os
 import re
 import zipfile
+import re
+import sys
 from html.parser import HTMLParser
 from urllib.parse import unquote
 from xml.etree import ElementTree as ET
@@ -22,11 +24,6 @@ def epub2md(file: str) -> str:
         
         markdown += parser.makrdown()
     return markdown
-
-import re
-import sys
-from html.parser import HTMLParser
-
 
 class MDFilter(HTMLParser):
     _headerRegex = re.compile('^h\d$')
