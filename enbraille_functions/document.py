@@ -1,6 +1,10 @@
 from typing import Optional
 import logging
 import os
+import sys
+if __name__ == '__main__':
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from PySide6.QtWidgets import (QPushButton, QGridLayout, QLabel, QRadioButton,
                                QWidget, QFrame, QWizardPage, QLineEdit, QHBoxLayout,
                                QFileDialog, QWizardPage, QSpinBox)
@@ -168,12 +172,13 @@ class EnBrailleDocumentConverter(QObject):
     def convert(self, proggressCallback: callable) -> None:
         mdContent : str  = None
         if self.data.documentFilename.endswith('.epub'):
-            mdContent = epub2md(self.data.documentFilename, self.data.documentFilename + '.md')
+            mdContent = epub2md(self.data.documentFilename)
         elif self.data.documentFilename.endswith('.md'):
             with open(self.data.documentFilename, 'r') as f:
                 mdContent = f.read()
         else:
             raise ValueError('Unsupported file format')
+        print(mdContent)
     
         # parse amrkdown
         doc = markdown.markdown(mdContent)
@@ -330,4 +335,22 @@ class EnBrailleDocumentPageOutput(QWizardPage):
 
     def validatePage(self) -> bool:
         return True
-    
+
+if __name__ == '__main__':
+    from argparse import ArgumentParser
+    from PySide6.QtCore import QCoreApplication
+    # parse one argument with file path
+    parser = ArgumentParser()
+    parser.add_argument('file', help='path to file')
+    args = parser.parse_args()
+
+    app = QCoreApplication()
+    data = EnBrailleData(app)
+    data.documentFilename = args.file
+    data.documentTable = 'de-g1.ctb'
+    data.documentLineLength = 40
+    data.documentPageLength = 25
+    data.documentWordSplitter = '-'
+
+    converter = EnBrailleDocumentConverter(data)
+    print(converter.convert(lambda percent, message: print(f'{percent}%: {message}')))
