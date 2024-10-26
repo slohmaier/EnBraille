@@ -21,6 +21,7 @@ from typing import Optional
 import logging
 import os
 import sys
+import ebooklib
 if __name__ == '__main__':
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -36,6 +37,13 @@ from PySide6.QtCore import Signal
 from libbrl import libbrlImpl
 import markdown
 import xml.etree.ElementTree as etree
+
+class EnBrailleEbookConverter(QObject):
+    def __init__(self, data: EnBrailleData) -> None:
+        super().__init__()
+
+        self.data = data
+        self.brl = libbrlImpl()
 
 class EnBrailleMd2BRF(markdown.treeprocessors.Treeprocessor):
     def __init__(self, data: EnBrailleData) -> None:
