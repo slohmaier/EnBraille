@@ -181,68 +181,68 @@ class EnBrailleData(QObject):
             self._settings.sync()   
         
     @property
-    def dcoumentH1Char(self) -> str:
+    def documentH1Char(self) -> str:
         return self._settings.value('document/H1Char', '#', type=str)
 
-    @dcoumentH1Char.setter
-    def dcoumentH1Char(self, value: str) -> None:
-        if self.dcoumentH1Char != value:
-            logging.debug('EnBrailleData: setting dcoumentH1Char to ' + str(value))
+    @documentH1Char.setter
+    def documentH1Char(self, value: str) -> None:
+        if self.documentH1Char != value:
+            logging.debug('EnBrailleData: setting documentH1Char to ' + str(value))
             self._settings.setValue('document/H1Char', value)
             self._settings.sync()
     
     @property
-    def dcoumentH2Char(self) -> str:
+    def documentH2Char(self) -> str:
         return self._settings.value('document/H2Char', '=', type=str)
     
-    @dcoumentH2Char.setter
-    def dcoumentH2Char(self, value: str) -> None:
-        if self.dcoumentH2Char != value:
-            logging.debug('EnBrailleData: setting dcoumentH2Char to ' + str(value))
+    @documentH2Char.setter
+    def documentH2Char(self, value: str) -> None:
+        if self.documentH2Char != value:
+            logging.debug('EnBrailleData: setting documentH2Char to ' + str(value))
             self._settings.setValue('document/H2Char', value)
             self._settings.sync()
 
     @property
-    def dcoumentH3Char(self) -> str:
+    def documentH3Char(self) -> str:
         return self._settings.value('document/H3Char', '-', type=str)
     
-    @dcoumentH3Char.setter
-    def dcoumentH3Char(self, value: str) -> None:
-        if self.dcoumentH3Char != value:
-            logging.debug('EnBrailleData: setting dcoumentH3Char to ' + str(value))
+    @documentH3Char.setter
+    def documentH3Char(self, value: str) -> None:
+        if self.documentH3Char != value:
+            logging.debug('EnBrailleData: setting documentH3Char to ' + str(value))
             self._settings.setValue('document/H3Char', value)
             self._settings.sync()
 
     @property
-    def dcoumentH4Char(self) -> str:
+    def documentH4Char(self) -> str:
         return self._settings.value('document/H4Char', '.', type=str)
     
-    @dcoumentH4Char.setter
-    def dcoumentH4Char(self, value: str) -> None:
-        if self.dcoumentH4Char != value:
-            logging.debug('EnBrailleData: setting dcoumentH4Char to ' + str(value))
+    @documentH4Char.setter
+    def documentH4Char(self, value: str) -> None:
+        if self.documentH4Char != value:
+            logging.debug('EnBrailleData: setting documentH4Char to ' + str(value))
             self._settings.setValue('document/H4Char', value)
             self._settings.sync()
 
     @property
-    def dcoumentH5Char(self) -> str:
+    def documentH5Char(self) -> str:
         return self._settings.value('document/H5Char', ',', type=str)
     
-    @dcoumentH5Char.setter
-    def dcoumentH5Char(self, value: str) -> None:
-        if self.dcoumentH5Char != value:
-            logging.debug('EnBrailleData: setting dcoumentH5Char to ' + str(value))
+    @documentH5Char.setter
+    def documentH5Char(self, value: str) -> None:
+        if self.documentH5Char != value:
+            logging.debug('EnBrailleData: setting documentH5Char to ' + str(value))
             self._settings.setValue('document/H5Char', value)
             self._settings.sync()
     
     @property
-    def dcoumentH6Char(self) -> str:
+    def documentH6Char(self) -> str:
         return self._settings.value('document/H6Char', ';', type=str)
     
-    @dcoumentH6Char.setter
-    def dcoumentH6Char(self, value: str) -> None:
-        if self.dcoumentH6Char != value:
-            logging.debug('EnBrailleData: setting dcoumentH6Char to ' + str(value))
+    @documentH6Char.setter
+    def documentH6Char(self, value: str) -> None:
+        if self.documentH6Char != value:
+            logging.debug('EnBrailleData: setting documentH6Char to ' + str(value))
             self._settings.setValue('document/H6Char', value)
             self._settings.sync()
     

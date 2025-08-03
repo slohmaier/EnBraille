@@ -1,0 +1,12 @@
+# GUI Framework
+PySide6>=6.0.0
+
+# Braille translation
+liblouis>=3.20.0
+
+# Document processing
+EbookLib>=0.18
+Markdown>=3.4.0
+
+# Build tools
+setuptools>=45.0.0
