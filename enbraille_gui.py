@@ -175,19 +175,26 @@ class EnBrailleWizardPageStart(QWizardPage):
         if function == EnBrailleMainFct.TEXT:
             text = textTemplate.format(self.tr('Text'))
             description = descTemplate.format(self.tr('Convert simple and plain text to BRF braille format.'))
+            accessibleDescription = self.tr('Convert simple and plain text to BRF braille format.')
         elif function == EnBrailleMainFct.DOCUMENT:
             text = textTemplate.format(self.tr('Document'))
             description = descTemplate.format(self.tr('Convert a document to BRF braille documents.'))
+            accessibleDescription = self.tr('Convert a document to BRF braille documents.')
         elif function == EnBrailleMainFct.REFORMAT:
             text = textTemplate.format(self.tr('Reformat BRF'))
             description = descTemplate.format(self.tr('Reformat a BRF braille document.'))
+            accessibleDescription = self.tr('Reformat a BRF braille document.')
         else:
             raise ValueError("Unknown function")        
 
         button = QRadioButton(text)
         button.setChecked(False)
         button.function = function
+        button.setAccessibleDescription(accessibleDescription)
     
         label = QLabel(description)
         label.setTextFormat(Qt.RichText)
+        label.setAccessibleName("")
+        label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        label.setFocusPolicy(Qt.NoFocus)
         return (button, label)
