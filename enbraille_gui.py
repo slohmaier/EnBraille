@@ -40,6 +40,12 @@ class EnBrailleWindow(QWizard):
         self.setWindowIcon(QIcon(":/assets/Icon.png"))
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
+        
+        # Enable keyboard navigation
+        self.setOption(QWizard.HaveHelpButton, False)
+        self.setOption(QWizard.HaveCustomButton1, False)
+        self.setOption(QWizard.HaveCustomButton2, False)
+        self.setOption(QWizard.HaveCustomButton3, False)
         self.startPage = EnBrailleWizardPageStart(data)
         self.addPage(self.startPage)
 
@@ -191,10 +197,20 @@ class EnBrailleWizardPageStart(QWizardPage):
         button.setChecked(False)
         button.function = function
         button.setAccessibleDescription(accessibleDescription)
+        button.setAccessibleName(text)
+        
+        # Add keyboard shortcuts for quick access
+        if function == EnBrailleMainFct.TEXT:
+            button.setShortcut("Alt+T")
+        elif function == EnBrailleMainFct.DOCUMENT:
+            button.setShortcut("Alt+D")
+        elif function == EnBrailleMainFct.REFORMAT:
+            button.setShortcut("Alt+R")
     
         label = QLabel(description)
         label.setTextFormat(Qt.RichText)
         label.setAccessibleName("")
         label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         label.setFocusPolicy(Qt.NoFocus)
+        label.setBuddy(button)  # Associate label with button for screen readers
         return (button, label)

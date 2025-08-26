@@ -18,6 +18,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 from typing import Optional
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QComboBox, QWidget
 from libbrl import libbrlImpl
 from enbraille_data import EnBrailleData
@@ -30,10 +31,21 @@ class EnBrailleTableComboBox(QComboBox):
         self._libbrl = libbrlImpl()
         self._tables = self._libbrl.listTables()
         
-        self.addItem('')
+        # Set accessibility properties
+        self.setAccessibleName("Braille Translation Table")
+        self.setAccessibleDescription("Select a braille translation table for converting text to braille")
+        
+        # Add empty item first
+        self.addItem('', '')
+        self.setItemData(0, "No table selected", Qt.ToolTipRole)
+        
+        # Add all available tables with descriptions
         for table in sorted(self._tables.keys()):
             table_filename = self._tables[table]
             self.addItem(table, table_filename)
+            # Add tooltip for better accessibility
+            item_index = self.count() - 1
+            self.setItemData(item_index, f"Braille table: {table}", Qt.ToolTipRole)
 
         self.table = self.data.textTable
     

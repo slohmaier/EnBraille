@@ -40,11 +40,21 @@ class EnBrailleSimpleTextPage(QWizardPage):
 
         self.tableComboBox = EnBrailleTableComboBox(data)
         self.tableComboBox.currentTextChanged.connect(self.onTableChanged)
-        self.layout.addWidget(QLabel(self.tr('Braille table:')), 0, 0)      
+        
+        # Create labels with proper accessibility
+        tableLabel = QLabel(self.tr('Braille table:'))
+        tableLabel.setBuddy(self.tableComboBox)
+        self.layout.addWidget(tableLabel, 0, 0)      
         self.layout.addWidget(self.tableComboBox, 0, 1)
 
         self.textEdit = QTextEdit()
-        self.layout.addWidget(QLabel(self.tr('Text:')), 1, 0, 1, 2)
+        self.textEdit.setAccessibleName(self.tr('Text to convert'))
+        self.textEdit.setAccessibleDescription(self.tr('Enter the text you want to convert to braille format'))
+        self.textEdit.setPlaceholderText(self.tr('Enter your text here...'))
+        
+        textLabel = QLabel(self.tr('Text:'))
+        textLabel.setBuddy(self.textEdit)
+        self.layout.addWidget(textLabel, 1, 0, 1, 2)
         self.layout.addWidget(self.textEdit, 2, 0, 1, 2)
 
         self.textEdit.textChanged.connect(self.onTextChanged)
@@ -95,7 +105,9 @@ class EnBrailleSimpleTextWorkPage(QWizardPage):
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
-        self.label = QLabel()
+        self.label = QLabel(self.tr('Converting text to braille format...'))
+        self.label.setAccessibleName(self.tr('Status'))
+        self.label.setAccessibleDescription(self.tr('Current status of the text conversion process'))
         self.layout.addWidget(self.label)
 
         self.worker = EnBrailleSimpleWorker(self.data)
@@ -127,15 +139,22 @@ class EnBrailleSimpleResultPage(QWizardPage):
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
-        self.layout.addWidget(QLabel(self.tr('Text:')), 0, 0)   
+        resultLabel = QLabel(self.tr('Text:'))
+        self.layout.addWidget(resultLabel, 0, 0)   
 
         self.copyToClipboardButton = QPushButton(self.tr('&Copy to Clipboard'))
         self.copyToClipboardButton.clicked.connect(self.onCopyToClipboard)
+        self.copyToClipboardButton.setAccessibleName(self.tr('Copy to Clipboard'))
+        self.copyToClipboardButton.setAccessibleDescription(self.tr('Copy the converted braille text to clipboard'))
+        self.copyToClipboardButton.setShortcut("Ctrl+C")
         self.layout.addWidget(self.copyToClipboardButton, 1, 0)
 
         self.textEdit = QTextEdit()
         self.textEdit.setReadOnly(True)
         self.textEdit.setText(self.data.outputText)
+        self.textEdit.setAccessibleName(self.tr('Converted braille text'))
+        self.textEdit.setAccessibleDescription(self.tr('The text converted to braille format, ready to copy'))
+        resultLabel.setBuddy(self.textEdit)
         self.layout.addWidget(self.textEdit, 2, 0)
 
     def cleanupPage(self) -> None:

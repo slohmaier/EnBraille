@@ -163,11 +163,18 @@ class EnBrailleReformatPage(QWizardPage):
         hbox = QHBoxLayout()
         self.layout.addLayout(hbox, row, 0, 1, 5)
         row += 1
-        hbox.addWidget(QLabel(self.tr('File:')))
+        fileLabel = QLabel(self.tr('File:'))
+        hbox.addWidget(fileLabel)
         self.filenameLineEdit = QLineEdit()
         self.filenameLineEdit.setReadOnly(True)
+        self.filenameLineEdit.setAccessibleName(self.tr('Selected file'))
+        self.filenameLineEdit.setAccessibleDescription(self.tr('Path to the braille file to be reformatted'))
+        fileLabel.setBuddy(self.filenameLineEdit)
         hbox.addWidget(self.filenameLineEdit)
         self.chooseButton = QPushButton(self.tr('Choose'))
+        self.chooseButton.setAccessibleName(self.tr('Choose file'))
+        self.chooseButton.setAccessibleDescription(self.tr('Open file dialog to select a braille file for reformatting'))
+        self.chooseButton.setShortcut("Ctrl+O")
         hbox.addWidget(self.chooseButton)
         self.chooseButton.clicked.connect(self.onChooseButtonClicked)
 
@@ -203,10 +210,14 @@ class EnBrailleReformatPage(QWizardPage):
         row += 1
 
         # add reformat settings controls
-        self.layout.addWidget(QLabel(self.tr('Line length:')), row, 0)
+        lineLengthLabel = QLabel(self.tr('Line length:'))
+        self.layout.addWidget(lineLengthLabel, row, 0)
         self.lineLengthSpinBox = QSpinBox()
         self.lineLengthSpinBox.setMinimum(0)
         self.lineLengthSpinBox.setMaximum(1000)
+        self.lineLengthSpinBox.setAccessibleName(self.tr('Line length'))
+        self.lineLengthSpinBox.setAccessibleDescription(self.tr('Maximum number of characters per line, 0 means no line splitting'))
+        lineLengthLabel.setBuddy(self.lineLengthSpinBox)
         self.layout.addWidget(self.lineLengthSpinBox, row, 1)
         self.lineLengthSpinBox.valueChanged.connect(self.onLineLengthSpinBoxValueChanged)
         self.lineLengthWarningLabel = QLabel(self.tr('0 means linues won\'t be split'))
@@ -214,18 +225,27 @@ class EnBrailleReformatPage(QWizardPage):
         self.lineLengthWarningLabel.setVisible(self.data.reformatLineLength == 0)
         row += 1
 
-        self.layout.addWidget(QLabel(self.tr('Page length:')), row, 0)
+        pageLengthLabel = QLabel(self.tr('Page length:'))
+        self.layout.addWidget(pageLengthLabel, row, 0)
         self.pageLengthSpinBox = QSpinBox()
         self.pageLengthSpinBox.setMinimum(0)
         self.pageLengthSpinBox.setMaximum(1000)
+        self.pageLengthSpinBox.setAccessibleName(self.tr('Page length'))
+        self.pageLengthSpinBox.setAccessibleDescription(self.tr('Maximum number of lines per page, 0 means no page splitting'))
+        pageLengthLabel.setBuddy(self.pageLengthSpinBox)
         self.layout.addWidget(self.pageLengthSpinBox, row, 1)
         self.pageLengthSpinBox.valueChanged.connect(self.onPageLengthSpinBoxValueChanged)
         self.pageLengthWarningLabel = QLabel(self.tr('0 means pages won\'t be split'))
         self.layout.addWidget(self.pageLengthWarningLabel, row, 2)
         row += 1
 
-        self.layout.addWidget(QLabel(self.tr('Word Splitter:')), row, 0)
+        wordSplitterLabel = QLabel(self.tr('Word Splitter:'))
+        self.layout.addWidget(wordSplitterLabel, row, 0)
         self.wordSplitterLineEdit = QLineEdit()
+        self.wordSplitterLineEdit.setAccessibleName(self.tr('Word splitter character'))
+        self.wordSplitterLineEdit.setAccessibleDescription(self.tr('Character used to split words across lines, must be exactly one character'))
+        self.wordSplitterLineEdit.setMaxLength(1)
+        wordSplitterLabel.setBuddy(self.wordSplitterLineEdit)
         self.layout.addWidget(self.wordSplitterLineEdit, row, 1)
         self.wordSplitterLineEdit.textChanged.connect(self.onWordSplitterLineEditTextChanged)
         self.wordSplitterWarningLabel = QLabel(self.tr('WordSplitter must be one character!'))
@@ -234,6 +254,8 @@ class EnBrailleReformatPage(QWizardPage):
 
         self._checkboxKeepPageNo = QCheckBox(self.tr('Keep page numbers'))
         self._checkboxKeepPageNo.stateChanged.connect(self.onKeepPageNoCheckBoxStateChanged)
+        self._checkboxKeepPageNo.setAccessibleName(self.tr('Keep page numbers'))
+        self._checkboxKeepPageNo.setAccessibleDescription(self.tr('Preserve existing page numbers during reformatting'))
         self.layout.addWidget(self._checkboxKeepPageNo, row, 1, 1, 2)
 
         self.lineLengthSpinBox.setValue(self.data.reformatLineLength)
