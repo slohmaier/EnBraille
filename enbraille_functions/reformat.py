@@ -92,7 +92,7 @@ class EnBrailleReformater(QObject):
     def _parseParagraphs(self, inputFile, data: EnBrailleData) -> list[str]:
         paragraphs = ['']
         lines = inputFile.readlines()
-        logging.debug('parsing lines: {} to paragrphs'.format(len(lines)))
+        logging.debug('parsing lines: {} to paragraphs'.format(len(lines)))
         wordRemainder = ''
         for line in lines:
             #strip trailing ' ', '\n' and '\r'

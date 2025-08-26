@@ -38,14 +38,14 @@ def epub2md(file: str) -> str:
         try:
             parser.feed(content)
             parser.close()
-        except:
-            raise
+        except Exception as e:
+            raise e
         
-        markdown += parser.makrdown()
+        markdown += parser.markdown()
     return markdown
 
 class MDFilter(HTMLParser):
-    _headerRegex = re.compile('^h\d$')
+    _headerRegex = re.compile(r'^h\d$')
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
@@ -164,7 +164,7 @@ class MDFilter(HTMLParser):
         else:
             self._markdown += data
     
-    def makrdown(self):
+    def markdown(self):
         return self._markdown
 
 class Epub:

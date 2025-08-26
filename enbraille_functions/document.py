@@ -205,7 +205,7 @@ class EnBrailleDocumentConverter(QObject):
                 mdContent = f.read()
         else:
             raise ValueError('Unsupported file format')
-        print(mdContent)
+        logging.debug("Markdown content: %s", mdContent)
     
         # parse amrkdown
         doc = markdown.markdown(mdContent)
@@ -380,4 +380,5 @@ if __name__ == '__main__':
     data.documentWordSplitter = '-'
 
     converter = EnBrailleDocumentConverter(data)
-    print(converter.convert(lambda percent, message: print(f'{percent}%: {message}')))
+    result = converter.convert(lambda percent, message: logging.info(f'{percent}%: {message}'))
+    logging.info("Conversion result: %s", result)

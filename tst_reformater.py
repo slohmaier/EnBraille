@@ -48,4 +48,4 @@ if __name__ == '__main__':
         if n.startswith('refor'):
             sys.stderr.write('{}: {}\n'.format(n, getattr(enbrailledata, n)))
     d = Dummy()
-    print(r.reformat(d.progress, enbrailledata))
+    logging.info("Reformat result: %s", r.reformat(d.progress, enbrailledata))
