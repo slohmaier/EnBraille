@@ -58,6 +58,10 @@ class MDFilter(HTMLParser):
         self._tableCols = 0
         self._inTableCell = False
         self._listLevel = -1
+        self._inBlockquote = False
+        self._inPre = False
+        self._inCode = False
+        self._inTh = False
 
     def handle_starttag(self, tag: str, attrs):
         if tag == 'body':
@@ -66,7 +70,7 @@ class MDFilter(HTMLParser):
         if not self._inBody:
             return
 
-        if tag in ['img', 'image', 'div', 'svg', 'thead', 'tbody', 'ui', 'ol']:
+        if tag in ['img', 'image', 'div', 'svg', 'tbody']:
             pass
         elif tag == 'p':
             self._isP = True
@@ -92,6 +96,9 @@ class MDFilter(HTMLParser):
             self._tableCols = 0
         elif tag == 'td':
             self._inTableCell = True
+        elif tag == 'th':
+            self._inTh = True
+            self._inTableCell = True
         elif self._headerRegex.match(tag):
             self._markdown += '#'*int(tag[1]) + ' '
         elif tag == 'span':
@@ -99,7 +106,19 @@ class MDFilter(HTMLParser):
         elif tag in ['ul', 'ol']:
             self._listLevel += 1
         elif tag == 'li':
-            self._markdown += '  '*self._listLevel + '-'
+            self._markdown += '  '*self._listLevel + '- '
+        elif tag == 'blockquote':
+            self._inBlockquote = True
+            self._markdown += '\n> '
+        elif tag == 'pre':
+            self._inPre = True
+            self._markdown += '\n```\n'
+        elif tag == 'code':
+            if not self._inPre:
+                self._inCode = True
+                self._markdown += '`'
+        elif tag in ['dl', 'dt', 'dd', 'col', 'colgroup']:
+            pass
         elif self._showunhandled:
             sys.stderr.write('STARTTAG> {0}\n'.format(tag))
 
@@ -109,13 +128,13 @@ class MDFilter(HTMLParser):
         if not self._inBody:
             return
 
-        if tag in ['br', 'img', 'image', 'div', 'svg', 'tbody']:
+        if tag in ['br', 'img', 'image', 'div', 'svg', 'tbody', 'thead']:
             pass
         elif tag == 'p':
             self._isP = False
             self._markdown += '\n'
         elif tag == 'a':
-            if self._aHref.find('.xhtml') == -1:
+            if self._aHref and self._aHref.find('.xhtml') == -1:
                 self._markdown += '[{0}]({1})'.format(self._atitle, self._aHref)
             elif self._atitle.strip():
                 self._markdown += '"{0}"'.format(self._atitle)
@@ -128,13 +147,17 @@ class MDFilter(HTMLParser):
         elif tag == 'table':
             self._markdown += '\n'
         elif tag == 'thead':
-            self.markdown += ' | '.join([' --- ']*self._tableCols).strip() + '\n'
+            self._markdown += ' | '.join([' --- ']*self._tableCols).strip() + '\n'
         elif tag == 'td':
+            self._inTableCell = False
+            self._markdown += ' | '
+        elif tag == 'th':
+            self._inTh = False
             self._inTableCell = False
             self._markdown += ' | '
         elif tag == 'tr':
             if self._markdown.endswith(' | '):
-                self._markdown = self._markdown[:len(' | ')]
+                self._markdown = self._markdown[:-len(' | ')]
             self._markdown += '\n\n'
         elif self._headerRegex.match(tag):
             self._markdown += '\n'
@@ -144,6 +167,18 @@ class MDFilter(HTMLParser):
             self._listLevel -= 1
         elif tag == 'li':
             self._markdown += '\n'
+        elif tag == 'blockquote':
+            self._inBlockquote = False
+            self._markdown += '\n\n'
+        elif tag == 'pre':
+            self._inPre = False
+            self._markdown += '\n```\n\n'
+        elif tag == 'code':
+            if not self._inPre and self._inCode:
+                self._inCode = False
+                self._markdown += '`'
+        elif tag in ['dl', 'dt', 'dd', 'col', 'colgroup']:
+            pass
         elif self._showunhandled:
             sys.stderr.write('ENDTAG> {0}\n'.format(tag))
         
@@ -159,6 +194,14 @@ class MDFilter(HTMLParser):
 
         if self._aHref != None:
             self._atitle += data
+        elif self._inPre:
+            self._markdown += data
+        elif self._inBlockquote:
+            lines = data.split('\n')
+            for i, line in enumerate(lines):
+                if i > 0:
+                    self._markdown += '\n> '
+                self._markdown += line
         elif (self._isP or self._inTableCell) and data:
             self._markdown += data + '\n'
         else:

@@ -1,7 +1,7 @@
 import unittest
 import os
 from enbraille_functions.reformat import EnBrailleReformater
-from test_utilenbraille import gen_data
+from tests.test_utilenbraille import gen_data
 
 TESTFILE_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
