@@ -114,7 +114,7 @@ class EnBrailleReformater(QObject):
                     words[0] = wordRemainder + words[0]
                     wordRemainder = ''
 
-                if words[-1].endswith(data.reformatWordSplitter):
+                if words[-1].endswith(data.reformatWordSplitter) and len(words) > 1:
                     wordRemainder = words[-1][:-1]
                     words = words[:-1]
 
