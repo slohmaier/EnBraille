@@ -1,0 +1,14 @@
+# Build requirements for creating macOS app bundle
+
+# App bundling
+py2app>=0.28.0
+
+# Core requirements (duplicated from main requirements.txt for build environment)
+PySide6>=6.0.0
+liblouis>=3.20.0
+EbookLib>=0.18
+Markdown>=3.4.0
+setuptools>=45.0.0
+
+# Additional build tools
+wheel>=0.37.0

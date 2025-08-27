@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- App Sandbox -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    
+    <!-- File Access -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    
+    <!-- Network Access -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    
+    <!-- Outgoing connections for website and GitHub -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    
+    <!-- Hardened Runtime (for distribution outside App Store) -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <false/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <false/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <false/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <false/>
+    
+    <!-- Accessibility -->
+    <key>com.apple.security.accessibility</key>
+    <false/>
+    
+    <!-- Additional entitlements for App Store -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.com.slohmaier.enbraille</string>
+    </array>
+    
+    <!-- iCloud container (if needed for document sync) -->
+    <!-- Uncomment if iCloud document storage is desired -->
+    <!--
+    <key>com.apple.security.files.container</key>
+    <array>
+        <string>iCloud.com.slohmaier.enbraille</string>
+    </array>
+    <key>com.apple.developer.ubiquity-kvstore-identifier</key>
+    <string>$(TeamIdentifierPrefix)com.slohmaier.enbraille</string>
+    -->
+</dict>
+</plist>
