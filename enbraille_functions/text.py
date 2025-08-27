@@ -20,7 +20,7 @@
 import logging
 import os
 import sys
-from PySide6.QtCore import Qt, Slot, QThread, Signal
+from PySide6.QtCore import Qt, Slot, QThread, Signal, QTimer
 from PySide6.QtGui import QGuiApplication, QClipboard
 from PySide6.QtWidgets import QApplication, QGridLayout, QLabel, QTextEdit, QWizardPage, QWizard, QPushButton, QProgressBar
 from enbraille_widgets import EnBrailleTableComboBox
@@ -61,6 +61,14 @@ class EnBrailleSimpleTextPage(QWizardPage):
     
     def cleanupPage(self) -> None:
         pass
+    
+    def initializePage(self):
+        """Set focus to the braille table combo box when page is shown"""
+        super().initializePage()
+        
+        # Focus the braille table selection first as it's typically the first thing users need to set
+        QTimer.singleShot(50, lambda: self.tableComboBox.setFocus(Qt.OtherFocusReason))
+        logging.debug('Setting focus to braille table combo box on text page')
     
     def isComplete(self) -> bool:
         return self.data.inputText != '' and self.tableComboBox.currentText() != ''

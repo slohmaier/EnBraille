@@ -28,7 +28,7 @@ if __name__ == '__main__':
 from PySide6.QtWidgets import (QPushButton, QGridLayout, QLabel, QRadioButton,
                                QWidget, QFrame, QWizardPage, QLineEdit, QHBoxLayout,
                                QFileDialog, QWizardPage, QSpinBox)
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, QTimer
 import markdown.treeprocessors
 from enbraille_data import EnBrailleData
 from enbraille_widgets import EnBrailleTableComboBox
@@ -395,7 +395,12 @@ class EnBrailleDocumentPage(QWizardPage):
         pass
     
     def initializePage(self) -> None:
-        logging.debug('child widgets: ' + str(self.layout.count())) 
+        super().initializePage()
+        logging.debug('child widgets: ' + str(self.layout.count()))
+        
+        # Focus the Browse button as it's the primary action on this page
+        QTimer.singleShot(50, lambda: self.documentButton.setFocus(Qt.OtherFocusReason))
+        logging.debug('Setting focus to document browse button on document page')
     
     def isComplete(self) -> bool:
         return os.path.exists(self.data.documentFilename) and self.data.documentTable != ''

@@ -23,7 +23,7 @@ import re
 import traceback
 from typing import Optional
 
-from PySide6.QtCore import Qt, QThread, Signal, Slot, QObject
+from PySide6.QtCore import Qt, QThread, Signal, Slot, QObject, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QSpinBox, QFileDialog, QFrame, QGridLayout, QWizard,
                                QLabel, QLineEdit, QMessageBox, QPushButton, QSizePolicy,
@@ -267,7 +267,13 @@ class EnBrailleReformatPage(QWizardPage):
         pass
     
     def initializePage(self) -> None:
-        logging.debug('child widgets: ' + str(self.layout.count())) 
+        super().initializePage()
+        logging.debug('child widgets: ' + str(self.layout.count()))
+        
+        # Focus the choose file button as it's the primary action on this page
+        if hasattr(self, 'chooseButton'):
+            QTimer.singleShot(50, lambda: self.chooseButton.setFocus(Qt.OtherFocusReason))
+            logging.debug('Setting focus to choose file button on reformat page') 
     
     def isComplete(self) -> bool:
         if type(self.data.reformatFilename) == str:

@@ -20,7 +20,7 @@
 import logging
 from typing import Optional
 
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import Qt, Slot, QTimer
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QButtonGroup, QGridLayout, QLabel, QRadioButton,
                                QWidget, QWizard, QWizardPage, QMessageBox)
@@ -91,6 +91,17 @@ class EnBrailleWindow(QWizard):
         data.mainFunctionChanged.connect(self.onMainFunctionChanged)
         self.currentIdChanged.connect(self.onPageChanged)
         
+        # Enable better keyboard navigation
+        self.setAttribute(Qt.WA_KeyboardFocusChange, True)
+        
+        # Set accessible properties for the wizard
+        self.setAccessibleName("EnBraille Conversion Wizard")
+        self.setAccessibleDescription("Step-by-step wizard to convert text, documents, or reformat braille files")
+        
+        # Add keyboard shortcuts for accessibility
+        # Enable help button if needed (commented out as it's not currently used)
+        # self.setOption(QWizard.HaveHelpButton, True)
+        
     def show(self) -> None:
         res = super().show()
         self.data.mainFunctionChanged.emit(self.data.mainFunction)
@@ -103,6 +114,9 @@ class EnBrailleWindow(QWizard):
             logging.debug('EnBrailleWindow: setting visibility for widgets in page ' + str(page.__class__) + ' to ' + str(page.isVisible()))
             for widget in page.findChildren(QWidget):
                 widget.setVisible(pageId == newPageId)
+        
+        # Ensure screen reader focuses the first focusable element on the new page
+        self.focusFirstElementOnPage(newPageId)
     
     @Slot(EnBrailleMainFct)
     def onMainFunctionChanged(self, mainFunction: EnBrailleMainFct):
@@ -134,6 +148,72 @@ class EnBrailleWindow(QWizard):
     def updateNextButtonState(self):
         page = self.currentPage()
         self.button(QWizard.NextButton).setEnabled(page.isComplete())
+    
+    def focusFirstElementOnPage(self, pageId: int):
+        """
+        Set focus to the first focusable element on the given page.
+        This ensures screen readers announce the page content properly.
+        """
+        page = self.page(pageId)
+        if not page:
+            return
+            
+        # Use a small delay to ensure the page is fully rendered
+        QTimer.singleShot(50, lambda: self._setFocusToFirstElement(page))
+    
+    def _setFocusToFirstElement(self, page: QWizardPage):
+        """Helper method to find and focus the first focusable element"""
+        # Define priority order for focus (most important elements first)
+        priority_widgets = [
+            'QRadioButton', 'QLineEdit', 'QTextEdit', 'QComboBox', 
+            'QSpinBox', 'QPushButton', 'QCheckBox', 'QListWidget', 
+            'QTreeWidget', 'QTableWidget', 'QSlider'
+        ]
+        
+        # First, try to find elements in priority order
+        for widget_type in priority_widgets:
+            for widget in page.findChildren(QWidget):
+                if (widget.__class__.__name__ == widget_type and 
+                    widget.isVisible() and 
+                    widget.isEnabled() and
+                    widget.focusPolicy() != Qt.NoFocus):
+                    
+                    logging.debug(f'Setting focus to {widget_type}: {widget.objectName() or "unnamed"}')
+                    widget.setFocus(Qt.OtherFocusReason)
+                    return
+        
+        # If no priority widget found, focus any focusable widget
+        for widget in page.findChildren(QWidget):
+            if (widget.isVisible() and 
+                widget.isEnabled() and
+                widget.focusPolicy() != Qt.NoFocus):
+                
+                logging.debug(f'Setting focus to fallback widget: {widget.__class__.__name__}')
+                widget.setFocus(Qt.OtherFocusReason)
+                return
+        
+        # Last resort: focus the page title or first label
+        for widget in page.findChildren(QLabel):
+            if widget.isVisible():
+                # Make the label focusable temporarily for screen reader announcement
+                widget.setFocusPolicy(Qt.StrongFocus)
+                widget.setFocus(Qt.OtherFocusReason)
+                logging.debug('Setting focus to label for screen reader announcement')
+                return
+                
+        logging.debug('No focusable element found on page')
+    
+    def next(self):
+        """Override next to ensure focus management"""
+        result = super().next()
+        # Focus will be set by onPageChanged signal
+        return result
+    
+    def back(self):
+        """Override back to ensure focus management"""
+        result = super().back()
+        # Focus will be set by onPageChanged signal
+        return result
 
 class EnBrailleWizardPageStart(QWizardPage):
     def __init__(self, data: EnBrailleData):
@@ -142,6 +222,10 @@ class EnBrailleWizardPageStart(QWizardPage):
         self.data = data
         self.setTitle(self.tr('What to EnBraille?'))
         self.setSubTitle(self.tr("Please select the function you want to use:"))
+        
+        # Set accessible properties for the page
+        self.setAccessibleName("Function Selection Page")
+        self.setAccessibleDescription("Choose between text conversion, document conversion, or BRF reformatting")
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
@@ -214,3 +298,14 @@ class EnBrailleWizardPageStart(QWizardPage):
         label.setFocusPolicy(Qt.NoFocus)
         label.setBuddy(button)  # Associate label with button for screen readers
         return (button, label)
+    
+    def initializePage(self):
+        """Set focus to the first radio button when page is shown"""
+        super().initializePage()
+        
+        # Find the first visible radio button and set focus
+        for button in self.buttonGroup.buttons():
+            if button.isVisible() and button.isEnabled():
+                QTimer.singleShot(50, lambda: button.setFocus(Qt.OtherFocusReason))
+                logging.debug('Setting focus to first radio button on start page')
+                break
