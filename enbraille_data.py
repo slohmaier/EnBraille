@@ -311,3 +311,14 @@ class EnBrailleData(QObject):
             logging.debug('EnBrailleData: setting documentBulletL6Char to ' + str(value))
             self._settings.setValue('document/BulletL6Char', value)
             self._settings.sync()
+    
+    @property
+    def skipWelcomePage(self) -> bool:
+        return self._settings.value('ui/skipWelcomePage', False, type=bool)
+    
+    @skipWelcomePage.setter
+    def skipWelcomePage(self, value: bool) -> None:
+        if self.skipWelcomePage != value:
+            logging.debug('EnBrailleData: setting skipWelcomePage to ' + str(value))
+            self._settings.setValue('ui/skipWelcomePage', value)
+            self._settings.sync()
