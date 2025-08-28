@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Read(C:\\Users\\slohm\\Downloads/**)",
+      "Read(C:\\Users\\slohm\\Downloads/**)",
+      "Read(C:\\Users\\slohm\\Downloads/**)",
+      "Bash(python -m pytest tests/test_epub_and_markdown.py::TestEpub3Samples -v)",
+      "Bash(python tests/test_epub_and_markdown.py)",
+      "Bash(python tests:*)",
+      "Bash(python:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
