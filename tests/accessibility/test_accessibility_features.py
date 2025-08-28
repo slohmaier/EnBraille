@@ -70,7 +70,8 @@ def test_voiceover_accessibility():
         else:
             print("   ❌ Features label not found")
         
-        QTimer.singleShot(100, window.close)
+        window.close()
+        QTimer.singleShot(100, app.quit)
     
     QTimer.singleShot(200, analyze_accessibility)
     return app.exec()

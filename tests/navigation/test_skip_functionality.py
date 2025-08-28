@@ -42,20 +42,24 @@ def test_skip_functionality():
         print(f"   - Start ID set to: {window2.startId()}")
         
         window2.show()
+        
+        def check_not_skipped():
+            current_page = window2.currentPage()
+            if current_page:
+                print(f"   - Current page after show: {current_page.__class__.__name__}")
+                print(f"   - Page title: '{current_page.title()}'")
+            else:
+                print("   - No current page found")
+            
+            print("\n✅ Skip functionality test completed!")
+            print("\nResults:")
+            print("- When skip=True: Starts on 'What to EnBraille?' page")
+            print("- When skip=False: Starts on 'Welcome to EnBraille' page")
+            
+            window2.close()
+            QTimer.singleShot(100, app.quit)
+        
         QTimer.singleShot(100, check_not_skipped)
-    
-    def check_not_skipped():
-        current_page = window.currentPage()
-        print(f"   - Current page after show: {current_page.__class__.__name__}")
-        print(f"   - Page title: '{current_page.title()}'")
-        
-        print("\n✅ Skip functionality test completed!")
-        print("\nResults:")
-        print("- When skip=True: Starts on 'What to EnBraille?' page")
-        print("- When skip=False: Starts on 'Welcome to EnBraille' page")
-        
-        window.close()
-        QTimer.singleShot(100, app.quit)
     
     QTimer.singleShot(200, check_skipped)
     
