@@ -21,23 +21,23 @@
   <!-- Inner area -->
   <rect x="40" y="40" width="432" height="432" rx="40" ry="40" fill="#000000"/>
   
-  <!-- Letter 'e' in Braille (dots 1,5) - centered -->
+  <!-- Letter 'e' in Braille (dots 1,5) - left side, bigger and more separated -->
   <!-- Dot 1: top-left position -->
-  <circle cx="180" cy="200" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="150" cy="160" r="45" fill="url(#dot)" stroke="#FFFFFF" stroke-width="3"/>
   
   <!-- Dot 5: middle-right position -->
-  <circle cx="240" cy="260" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="220" cy="280" r="45" fill="url(#dot)" stroke="#FFFFFF" stroke-width="3"/>
   
-  <!-- Letter 'b' in Braille (dots 1,2) - centered -->  
+  <!-- Letter 'b' in Braille (dots 1,2) - right side, bigger and more separated -->  
   <!-- Dot 1: top-left position -->
-  <circle cx="300" cy="200" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="360" cy="160" r="45" fill="url(#dot)" stroke="#FFFFFF" stroke-width="3"/>
   
   <!-- Dot 2: middle-left position -->
-  <circle cx="300" cy="260" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="360" cy="280" r="45" fill="url(#dot)" stroke="#FFFFFF" stroke-width="3"/>
   
   <!-- Inner white highlights for better visibility -->
-  <circle cx="180" cy="200" r="16" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="240" cy="260" r="16" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="300" cy="200" r="16" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="300" cy="260" r="16" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="150" cy="160" r="22" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="220" cy="280" r="22" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="360" cy="160" r="22" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="360" cy="280" r="22" fill="#FFFFFF" opacity="0.9"/>
 </svg>
