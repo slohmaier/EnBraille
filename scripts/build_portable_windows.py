@@ -79,12 +79,16 @@ def build_portable():
         "--noconfirm",  # Overwrite without asking
         
         # Icon
-        "--icon", "resources/assets/Icon_Simple_256px.png",
+        "--icon", "resources/assets/Icon_Simple.ico",
         
         # Add data files
         "--add-data", "resources;resources",
-        "--add-data", "translations;translations",
+        "--add-data", "translations;translations", 
         "--add-data", "tools;tools",
+        
+        # Add liblouis data and binaries
+        "--collect-data", "louis",
+        "--collect-binaries", "louis",
         
         # Hidden imports for dynamic imports
         "--hidden-import", "enbraille_resources_rc",

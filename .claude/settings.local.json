@@ -21,7 +21,8 @@
       "Bash(pyside6-rcc:*)",
       "Bash(git commit:*)",
       "Bash(git rm:*)",
-      "Bash(for size in 16 24 32 48 64 128 256 512)"
+      "Bash(for size in 16 24 32 48 64 128 256 512)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": []
