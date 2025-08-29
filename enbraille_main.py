@@ -22,7 +22,7 @@ import sys
 import os
 from argparse import ArgumentParser
 from PySide6.QtCore import Qt, QTranslator, QLocale
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtWidgets import QApplication
 
 from enbraille_gui import EnBrailleWindow
@@ -45,13 +45,16 @@ if __name__ == "__main__":
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logLevel)
 
-    import resources.enbraille_resources as _
+    import enbraille_resources_rc
 
     app = QApplication(sys.argv)
     app.setApplicationName("EnBraille")
     app.setOrganizationName("slohmaier")
     app.setOrganizationDomain("slohmaier.de")
     app.setApplicationVersion("0.1.0")
+    
+    # Set application icon globally for all windows
+    app.setWindowIcon(QIcon(":/assets/Icon_Simple_64px.png"))
     
     # Setup translations using our Python-based system
     # Determine language
