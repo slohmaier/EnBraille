@@ -30,7 +30,7 @@ def read_requirements():
 
 setup(
     name='EnBraille',
-    version='1.0.0',
+    version='0.1.0',
     author='Stefan Lohmaier',
     author_email='',
     description='Translate text or documents to braille text or documents',

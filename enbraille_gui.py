@@ -75,7 +75,7 @@ class EnBrailleWelcomePage(QWizardPage):
         self.layout.addWidget(titleLabel)
         
         # Version info (you may want to make this dynamic)
-        versionLabel = QLabel(self.tr('Version 1.0 - Professional Braille Conversion Tool'))
+        versionLabel = QLabel(self.tr('Version 0.1.0 - Professional Braille Conversion Tool'))
         versionLabel.setAlignment(Qt.AlignCenter)
         versionLabel.setStyleSheet("color: gray; font-style: italic;")
         versionLabel.setAccessibleName(self.tr('Version Information'))
