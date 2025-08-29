@@ -32,7 +32,7 @@ from PySide6.QtCore import QObject, QTimer
 import markdown.treeprocessors
 from enbraille_data import EnBrailleData
 from enbraille_widgets import EnBrailleTableComboBox
-from util_epub import epub2md
+from tools.util_epub import epub2md
 from PySide6.QtCore import Signal
 from libbrl import libbrlImpl
 import markdown

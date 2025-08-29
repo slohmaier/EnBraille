@@ -101,7 +101,7 @@ class EnBrailleWelcomePage(QWizardPage):
         
         # Add website link
         websiteLabel = QLabel()
-        websiteLabel.setText('<a href="https://slohmaier.de/enbraille">Visit EnBraille Website: https://slohmaier.de/enbraille</a>')
+        websiteLabel.setText(self.tr('<a href="https://slohmaier.de/enbraille">Visit EnBraille Website: https://slohmaier.de/enbraille</a>'))
         websiteLabel.setTextFormat(Qt.RichText)
         websiteLabel.setOpenExternalLinks(True)
         websiteLabel.setAlignment(Qt.AlignCenter)

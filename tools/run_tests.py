@@ -13,7 +13,7 @@ def run_tests():
     print("=== EnBraille Test Runner ===\n")
     
     # Add current directory to path for imports
-    current_dir = Path(__file__).parent
+    current_dir = Path(__file__).parent.parent  # Go up one level since we're in tools/
     if str(current_dir) not in sys.path:
         sys.path.insert(0, str(current_dir))
     

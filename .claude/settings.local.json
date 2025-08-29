@@ -9,7 +9,11 @@
       "Bash(python tests/test_epub_and_markdown.py)",
       "Bash(python tests:*)",
       "Bash(python:*)",
-      "Bash(timeout 10 python:*)"
+      "Bash(timeout 10 python:*)",
+      "Bash(grep:*)",
+      "Bash(timeout 5 python enbraille_main.py --language de)",
+      "Bash(timeout:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

@@ -291,7 +291,7 @@ class EnBrailleReformatPage(QWizardPage):
                     if self._reformater.pageLength > 0:
                         self.readPageLengthLabel.setText(str(self._reformater.pageLength))  
                     else:
-                        self.readPageLengthLabel.setText('no pages detected')
+                        self.readPageLengthLabel.setText(self.tr('no pages detected'))
                     self.maxLineLengthLabel.setText(str(self._reformater.maxLineLength))
                 else:
                     self._reformater = [EnBrailleReformater(f) for f in filename]

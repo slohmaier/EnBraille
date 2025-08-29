@@ -19,13 +19,15 @@
 #
 import logging
 import sys
+import os
 from argparse import ArgumentParser
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTranslator, QLocale
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
 
 from enbraille_gui import EnBrailleWindow
 from enbraille_data import EnBrailleData
+import tools.translation_helper as translation_helper
 
 if __name__ == "__main__":
     logLevel = logging.INFO
@@ -34,6 +36,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-d", '--debug', action='store_true', help='activate debug logging')
     parser.add_argument('-r', '--reset', action='store_true', help='reset settings to default values')
+    parser.add_argument('-l', '--language', help='set application language (e.g., de, en)')
 
     args = parser.parse_args()
 
@@ -42,13 +45,32 @@ if __name__ == "__main__":
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logLevel)
 
-    import enbraille_resources as _
+    import resources.enbraille_resources as _
 
     app = QApplication(sys.argv)
     app.setApplicationName("EnBraille")
     app.setOrganizationName("slohmaier")
     app.setOrganizationDomain("slohmaier.de")
     app.setApplicationVersion("0.1.0")
+    
+    # Setup translations using our Python-based system
+    # Determine language
+    if args.language:
+        locale = args.language
+    else:
+        # Use system locale
+        locale = translation_helper.get_system_language()
+    
+    # Load translations
+    if translation_helper.load_translations(locale):
+        logging.info(f"Loaded translations for language: {locale}")
+        # Patch Qt's tr() method to use our translation system
+        if translation_helper.patch_qt_tr():
+            logging.info("Successfully patched Qt translation system")
+        else:
+            logging.warning("Failed to patch Qt translation system")
+    else:
+        logging.info(f"No translations found for language: {locale}, using English")
     
     embrailledata = EnBrailleData(app)
     if args.reset:

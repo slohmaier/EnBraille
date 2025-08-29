@@ -14,7 +14,7 @@ from io import BytesIO
 # Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from util_epub import epub2md, MDFilter, Epub
+from tools.util_epub import epub2md, MDFilter, Epub
 from enbraille_functions.document import EnBrailleMd2BRF
 from enbraille_data import EnBrailleData
 from PySide6.QtGui import QGuiApplication
