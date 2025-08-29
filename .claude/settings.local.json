@@ -13,7 +13,14 @@
       "Bash(grep:*)",
       "Bash(timeout 5 python enbraille_main.py --language de)",
       "Bash(timeout:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(inkscape:*)",
+      "Bash(for size in 16 24 32 48 64 128 256)",
+      "Bash(do inkscape --export-type=png --export-filename=Icon_Simple_$sizepx.png --export-width=$size --export-height=$size Icon_Simple.svg)",
+      "Bash(done)",
+      "Bash(pyside6-rcc:*)",
+      "Bash(git commit:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

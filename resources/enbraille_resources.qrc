@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>assets/Icon.png</file>
+        <file>assets/Icon_Simple.svg</file>
         <file>assets/Icon_Simple_16px.png</file>
         <file>assets/Icon_Simple_24px.png</file>
         <file>assets/Icon_Simple_32px.png</file>
@@ -9,9 +10,5 @@
         <file>assets/Icon_Simple_128px.png</file>
         <file>assets/Icon_Simple_256px.png</file>
         <file>assets/Icon_Simple_512px.png</file>
-        <file>assets/Icon.svg</file>
-        <file>assets/Icon_Simple.svg</file>
-        <file>assets/Icon_Enhanced.svg</file>
-        <file>assets/Icon_Compact.svg</file>
     </qresource>
 </RCC>

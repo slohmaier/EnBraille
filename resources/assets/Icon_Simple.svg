@@ -21,29 +21,23 @@
   <!-- Inner area -->
   <rect x="40" y="40" width="432" height="432" rx="40" ry="40" fill="#000000"/>
   
-  <!-- Letter 'e' in Braille (dots 1,5) -->
+  <!-- Letter 'e' in Braille (dots 1,5) - centered -->
   <!-- Dot 1: top-left position -->
-  <circle cx="160" cy="160" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="180" cy="200" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
   
   <!-- Dot 5: middle-right position -->
-  <circle cx="220" cy="220" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="240" cy="260" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
   
-  <!-- Letter 'b' in Braille (dots 1,2) -->  
+  <!-- Letter 'b' in Braille (dots 1,2) - centered -->  
   <!-- Dot 1: top-left position -->
-  <circle cx="320" cy="160" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="300" cy="200" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
   
   <!-- Dot 2: middle-left position -->
-  <circle cx="320" cy="220" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="300" cy="260" r="32" fill="url(#dot)" stroke="#FFFFFF" stroke-width="2"/>
   
   <!-- Inner white highlights for better visibility -->
-  <circle cx="160" cy="160" r="16" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="220" cy="220" r="16" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="320" cy="160" r="16" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="320" cy="220" r="16" fill="#FFFFFF" opacity="0.8"/>
-  
-  <!-- App name -->
-  <text x="256" y="380" text-anchor="middle" 
-        font-family="Arial, sans-serif" 
-        font-size="28" font-weight="bold" 
-        fill="#FFD700">EnBraille</text>
+  <circle cx="180" cy="200" r="16" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="240" cy="260" r="16" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="300" cy="200" r="16" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="300" cy="260" r="16" fill="#FFFFFF" opacity="0.8"/>
 </svg>
