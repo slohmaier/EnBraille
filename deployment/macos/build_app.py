@@ -34,7 +34,7 @@ import os
 
 # Get absolute path to assets
 assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
-icon_path = os.path.join(assets_dir, 'Icon.png')
+icon_path = os.path.join(assets_dir, 'Icon_Simple_512px.png')
 
 APP = ['enbraille_main.py']
 DATA_FILES = [
@@ -158,7 +158,7 @@ def verify_bundle_structure(app_path):
     # Check for icon
     icon_paths = [
         "Contents/Resources/Icon.icns",
-        "Contents/Resources/Icon.png", 
+        "Contents/Resources/Icon_Simple_512px.png", 
     ]
     
     icon_found = False

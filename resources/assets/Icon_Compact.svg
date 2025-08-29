@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- High contrast gradient for small sizes -->
+    <linearGradient id="compactBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE135;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D4AC0D;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- High contrast dot gradient -->
+    <radialGradient id="compactDot" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#FFE135;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Strong shadow for definition -->
+    <filter id="strongShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="4" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.6)"/>
+    </filter>
+  </defs>
+  
+  <!-- Simplified background - strong contrast -->
+  <rect x="16" y="16" width="480" height="480" rx="64" ry="64" 
+        fill="url(#compactBg)" stroke="#8B6914" stroke-width="8" filter="url(#strongShadow)"/>
+  
+  <!-- Dark background for maximum contrast -->
+  <rect x="40" y="40" width="432" height="432" rx="40" ry="40" fill="#000000"/>
+  
+  <!-- Larger, more visible Braille dots for "eb" -->
+  <!-- Simplified layout - bigger dots, more spacing -->
+  
+  <!-- Letter 'e' - dots 1,5 -->
+  <g id="compact-e">
+    <!-- Dot 1 (top-left) - much larger -->
+    <circle cx="160" cy="180" r="36" fill="url(#compactDot)" stroke="#FFFFFF" stroke-width="2"/>
+    
+    <!-- Dot 5 (middle-right) - much larger -->
+    <circle cx="240" cy="240" r="36" fill="url(#compactDot)" stroke="#FFFFFF" stroke-width="2"/>
+  </g>
+  
+  <!-- Letter 'b' - dots 1,2 -->
+  <g id="compact-b">
+    <!-- Dot 1 (top-left) - much larger -->
+    <circle cx="320" cy="180" r="36" fill="url(#compactDot)" stroke="#FFFFFF" stroke-width="2"/>
+    
+    <!-- Dot 2 (middle-left) - much larger -->
+    <circle cx="320" cy="240" r="36" fill="url(#compactDot)" stroke="#FFFFFF" stroke-width="2"/>
+  </g>
+  
+  <!-- High contrast highlights for maximum visibility -->
+  <g id="highlights">
+    <!-- Inner white cores for ultra visibility -->
+    <circle cx="160" cy="180" r="20" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="240" cy="240" r="20" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="320" cy="180" r="20" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="320" cy="240" r="20" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+  
+  <!-- Optional branding - only visible at larger sizes -->
+  <text x="256" y="380" text-anchor="middle" 
+        font-family="Arial Black, Arial, sans-serif" 
+        font-size="28" font-weight="900" 
+        fill="#FFE135" stroke="#000000" stroke-width="1">EB</text>
+</svg>

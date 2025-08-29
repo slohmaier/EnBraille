@@ -317,7 +317,7 @@ class EnBrailleWindow(QWizard):
         super().__init__()
         self.data = data
 
-        self.setWindowIcon(QIcon(":/assets/Icon.png"))
+        self.setWindowIcon(QIcon(":/assets/Icon_Simple_64px.png"))
         self.setWindowTitle("EnBraille")
         self.setWizardStyle(QWizard.ModernStyle)
         
