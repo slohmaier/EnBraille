@@ -39,15 +39,8 @@ def check_prerequisites():
     except ImportError:
         missing.append("cx_Freeze (pip install cx_freeze)")
     
-    # Check WiX toolset
-    try:
-        result = subprocess.run(['candle', '-?'], capture_output=True, shell=True)
-        if result.returncode == 0:
-            print("✅ Found WiX Toolset (candle)")
-        else:
-            missing.append("WiX Toolset v3 (https://wixtoolset.org/releases/)")
-    except FileNotFoundError:
-        missing.append("WiX Toolset v3 (https://wixtoolset.org/releases/)")
+    # cx_Freeze creates MSI files directly, no WiX needed
+    print("✅ cx_Freeze handles MSI creation directly")
     
     if missing:
         print("❌ Missing prerequisites:")
@@ -70,6 +63,7 @@ def get_version():
     except Exception:
         pass
     return "0.1.0"
+
 
 
 def create_setup_py():
@@ -109,8 +103,7 @@ build_exe_options = {{
         "PIL",
         "unittest",
         "test"
-    ],
-    "zip_include_packages": "*"
+    ]
 }}
 
 # MSI options
@@ -118,7 +111,7 @@ bdist_msi_options = {{
     "upgrade_code": "{{{str(uuid.uuid4()).upper()}}}",
     "add_to_path": False,
     "initial_target_dir": r"[ProgramFilesFolder]\\EnBraille",
-    "install_icon": "resources/assets/Icon_Simple_256px.png"
+    "install_icon": "resources/assets/Icon_Simple.ico"
 }}
 
 # Executable
@@ -128,7 +121,7 @@ executables = [
         "enbraille_main.py",
         base=base,
         target_name="EnBraille.exe",
-        icon="resources/assets/Icon_Simple_256px.png",
+        icon="resources/assets/Icon_Simple.ico",
         shortcut_name="EnBraille",
         shortcut_dir="DesktopFolder"
     )

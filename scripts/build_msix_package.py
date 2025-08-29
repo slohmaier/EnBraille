@@ -39,17 +39,43 @@ def check_prerequisites():
     except ImportError:
         missing.append("PyInstaller (pip install pyinstaller)")
     
-    # Check Windows SDK tools
-    sdk_tools = ['makeappx', 'signtool']
+    # Check Windows SDK tools in typical locations
+    sdk_tools = ['makeappx.exe', 'signtool.exe']
+    sdk_paths = [
+        # Visual Studio 2022 Windows SDK locations
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64",
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64", 
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64",
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64",
+        # Try PATH
+        ""
+    ]
+    
+    found_tools = {}
     for tool in sdk_tools:
-        try:
-            result = subprocess.run([tool, '/?'], capture_output=True, shell=True)
-            if result.returncode == 0:
-                print(f"✅ Found {tool}")
-            else:
-                missing.append(f"Windows SDK ({tool})")
-        except FileNotFoundError:
-            missing.append(f"Windows SDK ({tool})")
+        tool_found = False
+        for sdk_path in sdk_paths:
+            try:
+                if sdk_path:
+                    tool_path = Path(sdk_path) / tool
+                    if tool_path.exists():
+                        print(f"✅ Found {tool} at {tool_path}")
+                        found_tools[tool] = str(tool_path)
+                        tool_found = True
+                        break
+                else:
+                    # Try from PATH
+                    result = subprocess.run([tool.replace('.exe', ''), '/?'], capture_output=True, shell=True)
+                    if result.returncode == 0:
+                        print(f"✅ Found {tool} in PATH")
+                        found_tools[tool] = tool.replace('.exe', '')
+                        tool_found = True
+                        break
+            except FileNotFoundError:
+                continue
+        
+        if not tool_found:
+            missing.append(f"Windows SDK ({tool}) - install Visual Studio 2022 with Windows SDK")
     
     if missing:
         print("❌ Missing prerequisites:")
@@ -72,6 +98,31 @@ def get_version():
     except Exception:
         pass
     return "0.1.0"
+
+
+def get_sdk_tools():
+    """Get paths to Windows SDK tools"""
+    sdk_tools = ['makeappx.exe', 'signtool.exe']
+    sdk_paths = [
+        # Visual Studio 2022 Windows SDK locations
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64",
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64", 
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64",
+        r"C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64",
+    ]
+    
+    found_tools = {}
+    for tool in sdk_tools:
+        for sdk_path in sdk_paths:
+            tool_path = Path(sdk_path) / tool
+            if tool_path.exists():
+                found_tools[tool] = str(tool_path)
+                break
+        else:
+            # Try PATH as fallback
+            found_tools[tool] = tool.replace('.exe', '')
+    
+    return found_tools
 
 
 def create_app_manifest(version, package_dir):
@@ -289,12 +340,16 @@ def create_msix_package():
     # Create MSIX package
     msix_file = dist_dir / f"EnBraille_v{version}.msix"
     
+    # Get SDK tool paths
+    sdk_tools = get_sdk_tools()
+    makeappx_exe = sdk_tools.get('makeappx.exe', 'makeappx')
+    
     print("📦 Creating MSIX package...")
     makeappx_cmd = [
-        'makeappx',
+        makeappx_exe,
         'pack',
-        '/d', str(package_dir),
-        '/p', str(msix_file),
+        '/d', str(package_dir).replace('/', '\\'),
+        '/p', str(msix_file).replace('/', '\\'),
         '/overwrite'
     ]
     
