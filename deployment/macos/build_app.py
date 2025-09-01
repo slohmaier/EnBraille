@@ -32,15 +32,11 @@ def build_macos_app():
 from setuptools import setup
 import os
 
-# Get absolute path to assets
-assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
-icon_path = os.path.join(assets_dir, 'Icon_Simple_512px.png')
+# Get absolute path to assets - hardcode the path since relative paths are problematic
+icon_path = 'resources/assets/Icon_Enhanced.icns'
 
 APP = ['enbraille_main.py']
-DATA_FILES = [
-    ('assets', [icon_path]),
-    ('deployment/macos', ['deployment/macos/Info.plist'])
-]
+DATA_FILES = []
 
 OPTIONS = {
     'iconfile': icon_path if os.path.exists(icon_path) else None,
@@ -56,13 +52,12 @@ OPTIONS = {
         'NSSupportsVoiceOver': True,
         'NSSupportsScreenReader': True,
     },
-    'packages': ['PySide6', 'liblouis', 'markdown', 'ebooklib'],
+    'packages': ['PySide6', 'markdown', 'ebooklib'],
     'includes': [
-        'enbraille_gui', 'enbraille_data', 'enbraille_resources', 
-        'enbraille_tools', 'enbraille_widgets', 'libbrl', 'util_epub'
+        'enbraille_gui', 'enbraille_data', 'enbraille_resources_rc', 
+        'enbraille_tools', 'enbraille_widgets', 'libbrl'
     ],
     'excludes': ['tkinter'],
-    'resources': ['assets/'],
     'strip': False,
     'optimize': 1,
 }
@@ -158,7 +153,7 @@ def verify_bundle_structure(app_path):
     # Check for icon
     icon_paths = [
         "Contents/Resources/Icon.icns",
-        "Contents/Resources/Icon_Simple_512px.png", 
+        "Contents/Resources/Icon_Enhanced.icns", 
     ]
     
     icon_found = False

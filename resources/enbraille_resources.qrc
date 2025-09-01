@@ -9,5 +9,14 @@
         <file>assets/Icon_Simple_128px.png</file>
         <file>assets/Icon_Simple_256px.png</file>
         <file>assets/Icon_Simple_512px.png</file>
+        <file>assets/Icon_Enhanced_16px.png</file>
+        <file>assets/Icon_Enhanced_24px.png</file>
+        <file>assets/Icon_Enhanced_32px.png</file>
+        <file>assets/Icon_Enhanced_48px.png</file>
+        <file>assets/Icon_Enhanced_64px.png</file>
+        <file>assets/Icon_Enhanced_128px.png</file>
+        <file>assets/Icon_Enhanced_256px.png</file>
+        <file>assets/Icon_Enhanced_512px.png</file>
+        <file>assets/Icon_Enhanced.icns</file>
     </qresource>
 </RCC>

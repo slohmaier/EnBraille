@@ -54,7 +54,7 @@ if __name__ == "__main__":
     app.setApplicationVersion("0.1.0")
     
     # Set application icon globally for all windows
-    app.setWindowIcon(QIcon(":/assets/Icon_Simple_64px.png"))
+    app.setWindowIcon(QIcon(":/assets/Icon_Enhanced_64px.png"))
     
     # Setup translations using our Python-based system
     # Determine language
