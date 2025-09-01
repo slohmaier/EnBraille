@@ -37,7 +37,7 @@ def libbrlImpl(impl: libbrlImpls = libbrlImpls.LOUIS) -> libbrlInterface:
     if impl == libbrlImpls.LOUIS:
         return libbrlLouis()
     else:
-        raise NotImplemented()
+        raise NotImplementedError()
 
 import louis
 

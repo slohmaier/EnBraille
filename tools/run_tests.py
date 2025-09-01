@@ -25,6 +25,9 @@ def run_tests():
     
     # Test categories
     categories = {
+        "Core Libraries Tests": tests_dir / "core_libraries",
+        "Utilities Tests": tests_dir / "utilities",
+        "Business Logic Tests": tests_dir / "business_logic",
         "Welcome Page Tests": tests_dir / "welcome_page",
         "Accessibility Tests": tests_dir / "accessibility", 
         "UI Components Tests": tests_dir / "ui_components",
