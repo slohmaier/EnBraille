@@ -164,3 +164,6 @@ examples
 .vscode
 bin
 pyvenv.cfg
+
+# Claude Code settings
+.claude/settings.local.json
