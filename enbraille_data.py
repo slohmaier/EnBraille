@@ -129,20 +129,20 @@ class EnBrailleData(QObject):
     
     @reformatKeepPageNo.setter
     def reformatKeepPageNo(self, value: bool) -> None:
-        if self.reformatPageLength != value:
+        if self.reformatKeepPageNo != value:
             logging.debug('EnBrailleData: setting reformatKeepPageNo to ' + str(value))
             self._settings.setValue('reformatKeepPageNo', value)
             self._settings.sync()
     
     @property
     def documentTextTable(self) -> str:
-        return self._settings.value('documenttextTable', '', type=str)
+        return self._settings.value('documentTextTable', '', type=str)
     
-    @textTable.setter
+    @documentTextTable.setter
     def documentTextTable(self, value: str) -> None:    
         if self.documentTextTable != value:
-            logging.debug('EnBrailleData: setting documenttextTable to ' + str(value))
-            self._settings.setValue('documenttextTable', value)
+            logging.debug('EnBrailleData: setting documentTextTable to ' + str(value))
+            self._settings.setValue('documentTextTable', value)
             self._settings.sync()
 
             self.DocumentTextTableChanged.emit(value)

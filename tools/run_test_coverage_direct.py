@@ -85,7 +85,8 @@ exclude_lines =
             "Accessibility Tests": tests_dir / "accessibility", 
             "UI Components Tests": tests_dir / "ui_components",
             "Navigation Tests": tests_dir / "navigation",
-            "Text Functions Tests": tests_dir / "text_functions"
+            "Text Functions Tests": tests_dir / "text_functions",
+            "Data Model Tests": tests_dir / "data_model"
         }
         
         total_tests = 0
