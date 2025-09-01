@@ -1,0 +1,16 @@
+[run]
+source = enbraille_data, enbraille_gui, enbraille_main, enbraille_widgets, enbraille_tools, libbrl, enbraille_functions
+omit = *_rc.py, tests/*, scripts/*, deployment/*, .venv/*, build/*, dist/*, pyscript, shibokensupport/*, signature_bootstrap.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod
