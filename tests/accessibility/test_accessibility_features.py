@@ -1,9 +1,11 @@
 import sys
 import os
+import pytest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 """
-Test the accessibility of the simplified features section for VoiceOver compatibility
+Test the accessibility of the simplified features section for VoiceOver compatibility.
+Cross-platform GUI testing support for Windows and macOS.
 """
 
 import sys
@@ -11,12 +13,20 @@ from PySide6.QtWidgets import QApplication, QLabel
 from PySide6.QtCore import QTimer, Qt
 from enbraille_data import EnBrailleData
 from enbraille_gui import EnBrailleWindow
+from tests.gui_test_utils import skip_if_no_gui, gui_test_wrapper, create_test_application
 
+# Cross-platform GUI availability check
+pytestmark = skip_if_no_gui()
+
+@gui_test_wrapper
 def test_voiceover_accessibility():
-    """Test VoiceOver accessibility of simplified features"""
-    app = QApplication(sys.argv)
+    """Test VoiceOver accessibility of simplified features - Cross-platform compatible"""
+    app = create_test_application()
+    if app is None:
+        pytest.skip("Could not create QApplication")
     
     print("=== VoiceOver Accessibility Test ===")
+    print(f"Platform: {sys.platform}")
     
     # Create window
     data = EnBrailleData(app)
@@ -71,10 +81,11 @@ def test_voiceover_accessibility():
             print("   ❌ Features label not found")
         
         window.close()
-        QTimer.singleShot(100, app.quit)
+        app.quit()
     
+    # Run in a timer to avoid blocking
     QTimer.singleShot(200, analyze_accessibility)
-    return app.exec()
+    app.exec()
 
 if __name__ == "__main__":
     sys.exit(test_voiceover_accessibility())

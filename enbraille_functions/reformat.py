@@ -75,6 +75,10 @@ class EnBrailleReformater(QObject):
                         self._pageLength = pageLength
     
     def reformat(self, progress: Signal, data: EnBrailleData) -> str:
+        # If line length is 0, return empty string (no reformatting)
+        if data.reformatLineLength == 0:
+            return ''
+            
         with open(self._filename, 'r') as f:
             paragraphs = self._parseParagraphs(f, data)
             lines = []

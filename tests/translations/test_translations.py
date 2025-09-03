@@ -5,7 +5,7 @@ Test script to verify German translations work in the GUI
 
 import sys
 import os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'tools')))
 
 import translation_helper
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout

@@ -11,7 +11,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QSettings
-from PySide6.QtTest import QSignalSpy
+from PySide6 import QtTest
+QSignalSpy = QtTest.QSignalSpy
 from enbraille_data import EnBrailleData, EnBrailleMainFct
 
 

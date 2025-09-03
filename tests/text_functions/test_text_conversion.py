@@ -1,10 +1,12 @@
 import sys
 import os
+import pytest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 """
-Test script for text conversion functionality
-Tests the EnBraille text conversion classes and worker thread
+Test script for text conversion functionality.
+Tests the EnBraille text conversion classes and worker thread.
+Cross-platform GUI testing support for Windows and macOS.
 """
 
 import sys
@@ -12,7 +14,8 @@ import logging
 import time
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer, QEventLoop
-from PySide6.QtTest import QTest
+from PySide6 import QtTest
+QTest = QtTest.QTest
 from PySide6.QtGui import QGuiApplication
 
 from enbraille_data import EnBrailleData
@@ -22,13 +25,21 @@ from enbraille_functions.text import (
     EnBrailleSimpleResultPage,
     EnBrailleSimpleWorker
 )
+from tests.gui_test_utils import skip_if_no_gui, gui_test_wrapper, create_test_application
 
+# Cross-platform GUI availability check
+pytestmark = skip_if_no_gui()
+
+@gui_test_wrapper
 def test_text_conversion():
-    """Test the text conversion functionality"""
-    app = QApplication(sys.argv)
+    """Test the text conversion functionality - Cross-platform compatible"""
+    app = create_test_application()
+    if app is None:
+        pytest.skip("Could not create QApplication")
     
     # Enable logging
     logging.basicConfig(level=logging.DEBUG)
+    print(f"Platform: {sys.platform}")
     
     # Create data
     data = EnBrailleData(app)
@@ -213,8 +224,6 @@ def test_text_conversion():
     print("- Accessibility features (labels, descriptions, shortcuts)")
     print("- Focus management")
     print("- Edge case validation")
-    
-    return 0
 
 if __name__ == "__main__":
-    sys.exit(test_text_conversion())
+    test_text_conversion()

@@ -1,9 +1,11 @@
 import sys
 import os
+import pytest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 """
-Test script to verify screen reader focus management functionality
+Test script to verify screen reader focus management functionality.
+Cross-platform GUI testing support for Windows and macOS.
 """
 
 import sys
@@ -12,13 +14,21 @@ from PySide6.QtWidgets import QApplication, QWizard
 from PySide6.QtCore import QTimer
 from enbraille_data import EnBrailleData
 from enbraille_gui import EnBrailleWindow
+from tests.gui_test_utils import skip_if_no_gui, gui_test_wrapper, create_test_application
 
+# Cross-platform GUI availability check
+pytestmark = skip_if_no_gui()
+
+@gui_test_wrapper
 def test_focus_management():
-    """Test that focus is properly managed when navigating between pages"""
-    app = QApplication(sys.argv)
+    """Test that focus is properly managed when navigating between pages - Cross-platform compatible"""
+    app = create_test_application()
+    if app is None:
+        pytest.skip("Could not create QApplication")
     
     # Enable logging to see focus changes
     logging.basicConfig(level=logging.DEBUG)
+    print(f"Platform: {sys.platform}")
     
     # Create data and window
     data = EnBrailleData(app)
@@ -92,7 +102,7 @@ def test_focus_management():
     # Start testing after window is fully loaded
     QTimer.singleShot(200, test_navigation)
     
-    return app.exec()
+    app.exec()
 
 if __name__ == "__main__":
-    sys.exit(test_focus_management())
+    test_focus_management()
