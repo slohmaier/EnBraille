@@ -167,3 +167,7 @@ pyvenv.cfg
 
 # Claude Code settings
 .claude/settings.local.json
+
+# Translation reports and temporary files
+table_names.txt
+tools/table_translation_report.txt

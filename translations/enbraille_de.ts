@@ -610,4 +610,366 @@ Für Quellcode, Probleme und Beiträge besuchen Sie das GitHub-Repository.</tran
         <translation>Unterstützte Dateien (*.epub *.md);;EPUB-Dateien (*.epub);;Markdown-Dateien (*.md);;Alle Dateien (*.*</translation>
     </message>
 </context>
+<context>
+    <name>EnBrailleTableComboBox</name>
+    <message>
+        <source>Braille Translation Table</source>
+        <translation>Braille-Übersetzungstabelle</translation>
+    </message>
+    <message>
+        <source>Select a braille translation table for converting text to braille</source>
+        <translation>Wählen Sie eine Braille-Übersetzungstabelle zur Konvertierung von Text in Braille</translation>
+    </message>
+    <message>
+        <source>No table selected</source>
+        <translation>Keine Tabelle ausgewählt</translation>
+    </message>
+    <message>
+        <source>Braille table: {0}</source>
+        <translation>Braille-Tabelle: {0}</translation>
+    </message>
+</context>
+<context>
+    <name>BrailleTableNames</name>
+    <message>
+        <source>Afrikaans Braille Code (Grade 2)</source>
+        <translation>Afrikaans-Brailleschrift (Stufe 2)</translation>
+    </message>
+    <message>
+        <source>Akkadian</source>
+        <translation>Akkadisch</translation>
+    </message>
+    <message>
+        <source>Akkadian according to Borger system</source>
+        <translation>Akkadisch nach Borger-System</translation>
+    </message>
+    <message>
+        <source>Arabic Computer Braille table</source>
+        <translation>Arabische Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Arabic Grade 2 table</source>
+        <translation>Arabisch Stufe 2 Tabelle</translation>
+    </message>
+    <message>
+        <source>Biblical/Ancient Near Eastern language studies German system</source>
+        <translation>Biblische/Altorientalische Sprachwissenschaft deutsches System</translation>
+    </message>
+    <message>
+        <source>Biblical/Ancient Near Eastern language studies US system</source>
+        <translation>Biblische/Altorientalische Sprachwissenschaft US-System</translation>
+    </message>
+    <message>
+        <source>Chichewa (Malawi)</source>
+        <translation>Chichewa (Malawi)</translation>
+    </message>
+    <message>
+        <source>Chinese Common Braille Scheme</source>
+        <translation>Chinesisches gemeinsames Braille-Schema</translation>
+    </message>
+    <message>
+        <source>Chinese Current Braille System.</source>
+        <translation>Chinesisches aktuelles Braille-System</translation>
+    </message>
+    <message>
+        <source>Chinese Hong Kong Cantonese braille Translation Table</source>
+        <translation>Chinesische Hongkong-Kantonesisch-Braille-Übersetzungstabelle</translation>
+    </message>
+    <message>
+        <source>Chinese double spelling Braille.</source>
+        <translation>Chinesische doppelte Rechtschreibung Braille</translation>
+    </message>
+    <message>
+        <source>Classical Hebrew</source>
+        <translation>Klassisches Hebräisch</translation>
+    </message>
+    <message>
+        <source>Computer Spanish 8 dots Braille table</source>
+        <translation>Computer-Spanisch 8-Punkt-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Czech 8-dot Computer Braille Table</source>
+        <translation>Tschechische 8-Punkt-Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Danish, table for 8 dots grade 1.5, partial contraction (forward and backward translation) 1993</source>
+        <translation>Dänisch, Tabelle für 8-Punkt Stufe 1,5, teilweise Kontraktion (Vor- und Rückübersetzung) 1993</translation>
+    </message>
+    <message>
+        <source>Danish, table for 8 dots grade 2 (forward and backward translation) 1993</source>
+        <translation>Dänisch, Tabelle für 8-Punkt Stufe 2 (Vor- und Rückübersetzung) 1993</translation>
+    </message>
+    <message>
+        <source>Danish, table for 8 dots grade 2 forward and backward translation (2022)</source>
+        <translation>Dänisch, Tabelle für 8-Punkt Stufe 2 Vor- und Rückübersetzung (2022)</translation>
+    </message>
+    <message>
+        <source>English, U.S. grade 1 (EBAE) table</source>
+        <translation>Englisch, US Stufe 1 (EBAE) Tabelle</translation>
+    </message>
+    <message>
+        <source>Filipino Braille Code (Grade 2)</source>
+        <translation>Philippinischer Braillecode (Stufe 2)</translation>
+    </message>
+    <message>
+        <source>Finnish 8 dot braille table</source>
+        <translation>Finnische 8-Punkt-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>German 6 dots computer Braille table</source>
+        <translation>Deutsche 6-Punkt Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>German Grade 0 Braille</source>
+        <translation>Deutsche Brailleschrift Stufe 0</translation>
+    </message>
+    <message>
+        <source>German Grade 0 Braille (with capitals) (unofficial and experimental)</source>
+        <translation>Deutsche Brailleschrift Stufe 0 (mit Großbuchstaben) (inoffiziell und experimentell)</translation>
+    </message>
+    <message>
+        <source>German Grade 1 Braille</source>
+        <translation>Deutsche Brailleschrift Stufe 1</translation>
+    </message>
+    <message>
+        <source>German Grade 1 Braille (with capitals) (unofficial and experimental)</source>
+        <translation>Deutsche Brailleschrift Stufe 1 (mit Großbuchstaben) (inoffiziell und experimentell)</translation>
+    </message>
+    <message>
+        <source>German Grade 2 Braille</source>
+        <translation>Deutsche Brailleschrift Stufe 2</translation>
+    </message>
+    <message>
+        <source>German Grade 2 Braille (with capitals)</source>
+        <translation>Deutsche Brailleschrift Stufe 2 (mit Großbuchstaben)</translation>
+    </message>
+    <message>
+        <source>Hungarian Computer Braille table</source>
+        <translation>Ungarische Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Hungarian Grade 2 table</source>
+        <translation>Ungarisch Stufe 2 Tabelle</translation>
+    </message>
+    <message>
+        <source>Irish Braille Code Grade 1 uncontracted</source>
+        <translation>Irischer Braillecode Stufe 1 ungekürzt</translation>
+    </message>
+    <message>
+        <source>Italiano 8 punti</source>
+        <translation>Italienisch 8 Punkte</translation>
+    </message>
+    <message>
+        <source>Japanese Kantenji (braille kanji) Table</source>
+        <translation>Japanische Kantenji (Braille-Kanji) Tabelle</translation>
+    </message>
+    <message>
+        <source>Kinyarwanda Grade 1 Braille</source>
+        <translation>Kinyarwanda Stufe 1 Braille</translation>
+    </message>
+    <message>
+        <source>Korean Grade 1 (Uncontracted)</source>
+        <translation>Koreanisch Stufe 1 (ungekürzt)</translation>
+    </message>
+    <message>
+        <source>Korean Grade 1 (Uncontracted, 2006 edition)</source>
+        <translation>Koreanisch Stufe 1 (ungekürzt, Ausgabe 2006)</translation>
+    </message>
+    <message>
+        <source>Korean Grade 2 (Contracted)</source>
+        <translation>Koreanisch Stufe 2 (gekürzt)</translation>
+    </message>
+    <message>
+        <source>Korean Grade 2 (Contracted, 2006 edition)</source>
+        <translation>Koreanisch Stufe 2 (gekürzt, Ausgabe 2006)</translation>
+    </message>
+    <message>
+        <source>Luganda Grade 1 Braille</source>
+        <translation>Luganda Stufe 1 Braille</translation>
+    </message>
+    <message>
+        <source>Malay Braille Code (Grade 2)</source>
+        <translation>Malaiischer Braillecode (Stufe 2)</translation>
+    </message>
+    <message>
+        <source>Multi Language Coptic Computer Braille table</source>
+        <translation>Mehrsprachige koptische Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Northern Kurdish grade 0 braille</source>
+        <translation>Nordkurdisch Stufe 0 Braille</translation>
+    </message>
+    <message>
+        <source>Norwegian computer braille, 8-dot</source>
+        <translation>Norwegisch Computer-Braille, 8-Punkt</translation>
+    </message>
+    <message>
+        <source>Norwegian literary braille, 6-dot, contracted level 1</source>
+        <translation>Norwegisch literarische Brailleschrift, 6-Punkt, gekürzt Stufe 1</translation>
+    </message>
+    <message>
+        <source>Norwegian literary braille, 6-dot, contracted level 2</source>
+        <translation>Norwegisch literarische Brailleschrift, 6-Punkt, gekürzt Stufe 2</translation>
+    </message>
+    <message>
+        <source>Norwegian literary braille, 6-dot, contracted level 3</source>
+        <translation>Norwegisch literarische Brailleschrift, 6-Punkt, gekürzt Stufe 3</translation>
+    </message>
+    <message>
+        <source>Norwegian literary braille, 6-dot, uncontracted</source>
+        <translation>Norwegisch literarische Brailleschrift, 6-Punkt, ungekürzt</translation>
+    </message>
+    <message>
+        <source>Norwegian literary braille, 8-dot</source>
+        <translation>Norwegisch literarische Brailleschrift, 8-Punkt</translation>
+    </message>
+    <message>
+        <source>Norwegian literary braille, 8-dot with 6-dot fallback</source>
+        <translation>Norwegisch literarische Brailleschrift, 8-Punkt mit 6-Punkt-Fallback</translation>
+    </message>
+    <message>
+        <source>Persian  Grade 1 Braille table</source>
+        <translation>Persisch Stufe 1 Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Portuguese Grade 1 Braille Table</source>
+        <translation>Portugiesisch Stufe 1 Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Russian literary (grade 1) text translation table</source>
+        <translation>Russisch literarische (Stufe 1) Textübersetzungstabelle</translation>
+    </message>
+    <message>
+        <source>Russian literary text translation table</source>
+        <translation>Russisch literarische Textübersetzungstabelle</translation>
+    </message>
+    <message>
+        <source>Russian translation table for program sources</source>
+        <translation>Russische Übersetzungstabelle für Programmquellen</translation>
+    </message>
+    <message>
+        <source>Sesotho/Setswana/Sepedi braille code (grade 1)</source>
+        <translation>Sesotho/Setswana/Sepedi-Braillecode (Stufe 1)</translation>
+    </message>
+    <message>
+        <source>Sesotho/Setswana/Sepedi braille code (grade 2)</source>
+        <translation>Sesotho/Setswana/Sepedi-Braillecode (Stufe 2)</translation>
+    </message>
+    <message>
+        <source>Slovak (grade 1) text braille translation table</source>
+        <translation>Slowakisch (Stufe 1) Text-Braille-Übersetzungstabelle</translation>
+    </message>
+    <message>
+        <source>Spanish, Grade 2 table</source>
+        <translation>Spanisch, Stufe 2 Tabelle</translation>
+    </message>
+    <message>
+        <source>Swahili (Kenya) (Grade 1.2)</source>
+        <translation>Swahili (Kenia) (Stufe 1.2)</translation>
+    </message>
+    <message>
+        <source>Swahili (Kenya) Grade 1</source>
+        <translation>Swahili (Kenia) Stufe 1</translation>
+    </message>
+    <message>
+        <source>Swahili (Kenya) Grade 1.3</source>
+        <translation>Swahili (Kenia) Stufe 1.3</translation>
+    </message>
+    <message>
+        <source>Swahili (Kenya) Grade 1.4</source>
+        <translation>Swahili (Kenia) Stufe 1.4</translation>
+    </message>
+    <message>
+        <source>Swahili (Kenya) Grade 1.5</source>
+        <translation>Swahili (Kenia) Stufe 1.5</translation>
+    </message>
+    <message>
+        <source>Swahili (Kenya) Grade 2</source>
+        <translation>Swahili (Kenia) Stufe 2</translation>
+    </message>
+    <message>
+        <source>Swedish Grade 1 Braille Table, contractions level 1.</source>
+        <translation>Schwedisch Stufe 1 Brailletabelle, Kürzungen Stufe 1</translation>
+    </message>
+    <message>
+        <source>Swedish Grade 2 Braille Table, contractions level 2.</source>
+        <translation>Schwedisch Stufe 2 Brailletabelle, Kürzungen Stufe 2</translation>
+    </message>
+    <message>
+        <source>Swedish Grade Uncontracted Braille Table</source>
+        <translation>Schwedisch ungekürzte Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Syriac</source>
+        <translation>Syrisch</translation>
+    </message>
+    <message>
+        <source>Thai Current Braille System.</source>
+        <translation>Thai aktuelles Braille-System</translation>
+    </message>
+    <message>
+        <source>Transliterated Cuneiform</source>
+        <translation>Transliterierte Keilschrift</translation>
+    </message>
+    <message>
+        <source>Tshivenda braille code (grade 1)</source>
+        <translation>Tshivenda-Braillecode (Stufe 1)</translation>
+    </message>
+    <message>
+        <source>Tshivenda braille code (grade 2)</source>
+        <translation>Tshivenda-Braillecode (Stufe 2)</translation>
+    </message>
+    <message>
+        <source>U.K. English 8 dot Computer braille table</source>
+        <translation>Britisches Englisch 8-Punkt Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>U.K. English Grade 1 table</source>
+        <translation>Britisches Englisch Stufe 1 Tabelle</translation>
+    </message>
+    <message>
+        <source>U.S. English 6 dot computer braille table</source>
+        <translation>US-Englisch 6-Punkt Computer-Brailletabelle</translation>
+    </message>
+    <message>
+        <source>Ugaritic</source>
+        <translation>Ugaritisch</translation>
+    </message>
+    <message>
+        <source>Uncontracted braille table for Yiddish.</source>
+        <translation>Ungekürzte Brailletabelle für Jiddisch</translation>
+    </message>
+    <message>
+        <source>Uncontracted multi-language braille table for Hebrew, Arabic and English (Israel).</source>
+        <translation>Ungekürzte mehrsprachige Brailletabelle für Hebräisch, Arabisch und Englisch (Israel)</translation>
+    </message>
+    <message>
+        <source>Unified English Braille Code (Grade 1)</source>
+        <translation>Vereinheitlichter englischer Braillecode (Stufe 1)</translation>
+    </message>
+    <message>
+        <source>Unified English Braille Code (Grade 2)</source>
+        <translation>Vereinheitlichter englischer Braillecode (Stufe 2)</translation>
+    </message>
+    <message>
+        <source>Unofficial table used by some for studying classical and biblical Greek.</source>
+        <translation>Inoffizielle Tabelle, die von einigen zum Studium des klassischen und biblischen Griechisch verwendet wird</translation>
+    </message>
+    <message>
+        <source>Welsh Grade 1 table</source>
+        <translation>Walisisch Stufe 1 Tabelle</translation>
+    </message>
+    <message>
+        <source>computer braille table for Hebrew (Israel).</source>
+        <translation>Computer-Brailletabelle für Hebräisch (Israel)</translation>
+    </message>
+    <message>
+        <source>isiXhosa/isiZulu braille code (grade 1)</source>
+        <translation>isiXhosa/isiZulu-Braillecode (Stufe 1)</translation>
+    </message>
+    <message>
+        <source>isiXhosa/isiZulu braille code (grade 2)</source>
+        <translation>isiXhosa/isiZulu-Braillecode (Stufe 2)</translation>
+    </message>
+</context>
 </TS>
